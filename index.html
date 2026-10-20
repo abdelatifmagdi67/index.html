@@ -3,20 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>دلتا - المنصة الكاملة</title>
+<title>دلتا</title>
 <style>
 :root{--bg:#0b1220;--card:#111c33;--card2:#16233d;--text:#e8eefc;--muted:#9fb0cc;--line:#1f2d4a;--acc:#4cc9f0;--acc2:#b388ff;--ok:#3ddc97;--bad:#ff6b6b;--warn:#f59e0b;--r:14px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;margin:0;padding:14px;overflow-x:hidden}
+html,body{margin:0;padding:0;min-height:100vh;overflow-y:auto;overflow-x:hidden}
+body{font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:14px}
 .wrap{max-width:800px;margin:0 auto;display:none}
 h2{color:var(--acc);margin-top:0;text-align:center}
 h3{font-size:16px;margin:20px 0 10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px}
 label{display:block;margin-bottom:10px;font-size:13px;color:var(--muted);font-weight:bold}
-input[type=text],input[type=email],input[type=password],input[type=number],select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--line);background:#06101e;color:var(--text);font-family:monospace;font-size:14px;margin-top:6px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=url],select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--line);background:#06101e;color:var(--text);font-family:monospace;font-size:14px;margin-top:6px}
 textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px solid var(--line);background:#06101e;color:var(--text);font-family:monospace;font-size:14px;margin-top:6px;direction:ltr;text-align:left;white-space:pre;overflow-x:auto}
 .btn{padding:10px 16px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;font-size:14px;margin-bottom:5px;display:inline-block;text-decoration:none;transition:0.3s;text-align:center}
 .btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#071019}
+.btn.sec{background:var(--card2);color:var(--acc);border:1px solid var(--line)}
 .btn.sm{padding:6px 10px;font-size:12px;border-radius:6px}
 .btn:active{transform:scale(.95)}
 .btn.copy-btn{background:#06101e;color:var(--acc);border:1px solid var(--line)}
@@ -48,8 +50,8 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
 .badge-count{position:absolute;top:-5px;right:-5px;background:var(--bad);color:#fff;font-size:10px;padding:2px 5px;border-radius:50%;font-weight:bold;display:none}
 .notifications-dropdown{position:absolute;top:50px;left:14px;width:280px;max-height:300px;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);z-index:1000;padding:10px;display:none}
 .notif-item{font-size:11px;padding:6px;border-bottom:1px solid var(--line);margin-bottom:4px;background:var(--card2);border-radius:6px}
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:999;padding:15px}
-.modal-content{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:999;padding:15px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.modal-content{background:var(--card);border:1px solid var(--line);border-radius:var(--r);width:100%;max-width:500px;margin:20px auto}
 .accounts-modal{position:absolute;top:55px;right:14px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;width:250px;z-index:1000;display:none;box-shadow:0 10px 25px rgba(0,0,0,0.5)}
 .hidden{display:none!important}
 .preview-box{width:120px;height:120px;border-radius:50%;object-fit:cover;border:2px solid var(--acc);background:#000;margin:10px auto;display:block}
@@ -66,11 +68,15 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
 .result-box label{color:var(--text);font-size:12px;margin-top:8px;display:block}
 .result-box .url-input{font-size:11px;padding:8px;margin-top:4px;background:#06101e;color:var(--acc);border:1px solid var(--line);border-radius:6px;width:100%;direction:ltr;text-align:left}
 .result-box textarea{font-size:11px;color:var(--ok);min-height:60px;margin-top:4px}
+
+/* زر اختيار الملف - شغال 100% على الموبايل */
+.file-label{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#071019;font-weight:bold;font-size:15px;cursor:pointer;margin-bottom:8px;transition:0.2s}
+.file-label:active{transform:scale(0.97)}
+.file-label input{display:none}
 </style>
 </head>
 <body id="appBody" style="background-color:var(--bg)">
 
-<!-- ===== RAW MODE ===== -->
 <script>
 (function(){
     const rawParam = new URLSearchParams(window.location.search).get('raw');
@@ -90,7 +96,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
 })();
 </script>
 
-<!-- شاشة الدخول -->
 <div id="authScreen" class="hidden">
     <h2>منصة دلتا</h2>
     <div id="loginForm">
@@ -99,7 +104,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
         <label style="margin-top:8px">كلمة المرور</label>
         <input type="password" id="loginPass" placeholder="••••••••">
         <button class="btn primary" style="width:100%;margin-top:10px" onclick="doLogin()">تسجيل الدخول</button>
-        <button class="toggle-btn" onclick="toggleAuth('register')">حساب جديد؟ اضغط هنا</button>
+        <button class="toggle-btn" onclick="toggleAuth('register')">حساب جديد؟</button>
     </div>
     <div id="registerForm" class="hidden">
         <h3>إنشاء حساب جديد 🛡️</h3>
@@ -109,8 +114,8 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
         <input type="email" id="regEmail" placeholder="email@example.com">
         <label style="margin-top:8px">كلمة المرور</label>
         <input type="password" id="regPass" placeholder="••••••••">
-        <button class="btn primary" style="width:100%;margin-top:10px" onclick="doRegister()">تأكيد وفتح الحساب 🚀</button>
-        <button class="toggle-btn" onclick="toggleAuth('login')">عندك حساب؟ سجل دخولك</button>
+        <button class="btn primary" style="width:100%;margin-top:10px" onclick="doRegister()">إنشاء الحساب</button>
+        <button class="toggle-btn" onclick="toggleAuth('login')">عندك حساب؟</button>
     </div>
 </div>
 
@@ -123,7 +128,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
               <div id="savedAccountsList" style="margin-bottom:8px"></div>
               <div style="display:flex;gap:5px;border-top:1px solid var(--line);padding-top:8px">
                   <button class="btn sm primary" style="flex:1" onclick="openAuthModalForAction('login')">دخول</button>
-                  <button class="btn sm" style="flex:1;background:var(--card2);color:var(--acc);border:1px solid var(--line)" onclick="openAuthModalForAction('register')">تسجيل</button>
+                  <button class="btn sm sec" style="flex:1" onclick="openAuthModalForAction('register')">تسجيل</button>
               </div>
           </div>
           <div id="userHeaderDisplay" style="display:inline-block"></div>
@@ -163,12 +168,20 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
           </select>
         </label>
 
-        <label>صورة السكريبت (اختياري)
-          <button class="btn primary" type="button" style="width:100%;margin-top:6px" onclick="document.getElementById('scriptImageInput').click()">📸 اختيار صورة</button>
-          <input type="file" id="scriptImageInput" accept="image/*" style="display:none" onchange="handleScriptImageUpload(event)">
+        <!-- صورة السكريبت - زر label شغال على الموبايل -->
+        <div style="background:var(--card2);padding:12px;border-radius:10px;margin:12px 0">
+          <div style="font-size:13px;color:var(--acc);font-weight:bold;margin-bottom:10px">📸 صورة السكريبت (اختياري)</div>
+
+          <label class="file-label">
+            📁 اختيار صورة من الجهاز
+            <input type="file" id="scriptImageInput" accept="image/*" onchange="handleScriptImageUpload(event)">
+          </label>
+
           <input type="hidden" id="scriptImageData">
           <img id="scriptImagePreview" class="script-image-preview" style="display:none">
-        </label>
+          <button class="btn sm sec hidden" id="removeScriptImgBtn" style="width:100%;margin-top:6px" onclick="removeScriptImage()">🗑️ مسح الصورة</button>
+          <div id="scriptImageStatus" class="upload-status hidden"></div>
+        </div>
 
         <label style="margin-top:15px">كود السكريبت (Lua)
           <textarea id="scriptCode" placeholder="-- اكتب الكود هنا" spellcheck="false"></textarea>
@@ -179,31 +192,21 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
       </div>
   </div>
 
-  <!-- ===== دلتا توك ===== -->
   <div id="tabTok" class="hidden">
       <div class="card">
           <h3>🎬 نشر فيديو</h3>
           <label>الوصف<input type="text" id="tokCaption" placeholder="الوصف..."></label>
-          <label>الخصوصية
-              <select id="tokPrivacy">
-                  <option value="public">🌐 عام</option>
-                  <option value="followers">🔒 للمتابعين</option>
-              </select>
+          <label class="file-label">
+            📁 اختيار فيديو من الجهاز
+            <input type="file" id="tokMediaInput" accept="video/*,audio/*" onchange="handleTokMediaUpload(event)">
           </label>
-          <button class="btn primary" style="width:100%" onclick="document.getElementById('tokMediaInput').click()">📁 اختيار فيديو</button>
-          <input type="file" id="tokMediaInput" accept="video/*,audio/*" style="display:none" onchange="handleTokMediaUpload(event)">
           <input type="hidden" id="tokMediaData">
           <video id="tokVideoPreview" style="display:none;width:100%;max-height:150px;margin-top:8px" muted controls></video>
           <button class="btn primary" onclick="publishTokPost()" style="width:100%;margin-top:10px">🚀 نشر</button>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-          <button class="btn sm primary" id="tokFeedAll" onclick="setTokFeedMode('all')">🌐 الكل</button>
-          <button class="btn sm" id="tokFeedFollowing" onclick="setTokFeedMode('following')" style="background:var(--card2);color:var(--acc);border:1px solid var(--line)">⭐ المتابَعون</button>
-      </div>
       <div id="deltaTokFeed"><p style="color:var(--muted);text-align:center">جاري التحميل...</p></div>
   </div>
 
-  <!-- ===== التمويه ===== -->
   <div id="tabObf" class="hidden">
       <div class="card">
           <h3>تمويه السكريبت</h3>
@@ -211,19 +214,17 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
           <button class="btn primary" style="width:100%;margin-top:10px" onclick="obfuscateCode()">🔐 تمويه</button>
           <label style="margin-top:15px">الكود المموه</label>
           <textarea id="encryptedCode" readonly spellcheck="false"></textarea>
-          <button class="btn copy-btn" style="width:100%;margin-top:5px" onclick="copyText(document.getElementById('encryptedCode').value, this)">📋 نسخ</button>
+          <button class="btn copy-btn" style="width:100%;margin-top:5px" onclick="copyText(document.getElementById('encryptedCode').value,this)">📋 نسخ</button>
       </div>
   </div>
 
-  <!-- ===== سكريبتاتي ===== -->
   <div id="tabMy" class="hidden">
       <div class="card">
           <h3>📂 سكريبتاتي</h3>
-          <div id="myScriptsList"><p style="color:var(--muted);text-align:center">لا توجد سكريبتات.</p></div>
+          <div id="myScriptsList"><p style="color:var(--muted);text-align:center">لا توجد.</p></div>
       </div>
   </div>
 
-  <!-- ===== المجتمع ===== -->
   <div id="tabComm" class="hidden">
       <div class="card" style="padding:10px">
           <input type="text" id="searchInput" placeholder="ابحث..." oninput="renderCommunity()" style="margin-top:0">
@@ -231,15 +232,14 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
       <div id="communityList"><p style="color:var(--muted);text-align:center">المجتمع فاضي.</p></div>
   </div>
 
-  <!-- ===== المراسلات ===== -->
   <div id="tabChat" class="hidden">
       <div class="card">
-          <h3>👥 المحادثات</h3>
+          <h3>👥 المراسلات</h3>
           <input type="text" id="userSearchInput" placeholder="ابحث عن مستخدم..." oninput="searchUsers()" style="margin-bottom:12px">
           <div id="userSearchResults" style="margin-bottom:15px"></div>
           <div id="activeChatBox" class="hidden">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                  <span id="chatWithTitle" style="font-weight:bold;color:var(--acc)">المحادثة: -</span>
+                  <span id="chatWithTitle" style="font-weight:bold;color:var(--acc)">-</span>
                   <button class="btn sm" onclick="closeChat()" style="background:var(--bad);color:white">إغلاق</button>
               </div>
               <div class="card" style="height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:8px" id="chatMessages"></div>
@@ -252,31 +252,35 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   </div>
 </div>
 
-<!-- ===== بروفايل ===== -->
+<!-- بروفايل -->
 <div id="profileModal" class="modal-overlay hidden">
-    <div class="modal-content" style="padding:0;overflow:hidden">
-        <div id="bannerContainer" style="width:100%;height:110px;background:#1f2d4a;background-size:cover;background-position:center"></div>
+    <div class="modal-content">
+        <div id="bannerContainer" style="width:100%;height:110px;background:#1f2d4a;background-size:cover;background-position:center;border-radius:14px 14px 0 0"></div>
         <div style="padding:15px;text-align:center">
-            <img id="profileModalAvatar" src="" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--acc);margin:-50px auto 10px;display:block;background:#000">
+            <img id="profileModalAvatar" src="" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--acc);margin:-50px auto 10px;display:block;background:#000;position:relative;z-index:2">
             <h3 id="profileModalUsername" style="margin:5px 0;color:var(--acc)">اسم المستخدم</h3>
 
             <div id="aiVerifyStatusBox" style="background:rgba(76,201,240,0.15);border:1px solid var(--acc);color:var(--acc);padding:8px;border-radius:6px;font-size:12px;margin-bottom:10px;font-weight:bold;text-align:center">🤖 جارٍ الفحص...</div>
 
             <div class="upload-section">
-                <label style="color:var(--acc);font-size:13px">🖼️ الصورة الشخصية (GIF متحرك / أي حجم)</label>
-                <button class="btn primary" style="width:100%" onclick="document.getElementById('avatarFileInput').click()">📁 اختيار صورة</button>
-                <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="onAvatarSelect(event)">
+                <label style="color:var(--acc);font-size:13px">🖼️ الصورة الشخصية</label>
+                <label class="file-label">
+                    📁 من الجهاز
+                    <input type="file" id="avatarFileInput" accept="image/*" onchange="onAvatarSelect(event)">
+                </label>
                 <img id="avatarPreviewImg" class="preview-box hidden">
-                <button id="saveAvatarBtn" class="btn primary hidden" style="width:100%;margin-top:8px" onclick="saveMediaToCloud('avatar')">💾 حفظ الصورة الشخصية</button>
+                <button id="saveAvatarBtn" class="btn primary hidden" style="width:100%;margin-top:8px" onclick="saveMediaToCloud('avatar')">💾 حفظ</button>
                 <div id="avatarStatus" class="upload-status hidden"></div>
             </div>
 
             <div class="upload-section">
-                <label style="color:var(--acc);font-size:13px">🎨 البانر (GIF متحرك / أي حجم)</label>
-                <button class="btn primary" style="width:100%" onclick="document.getElementById('bannerFileInput').click()">📁 اختيار البانر</button>
-                <input type="file" id="bannerFileInput" accept="image/*" style="display:none" onchange="onBannerSelect(event)">
+                <label style="color:var(--acc);font-size:13px">🎨 البانر</label>
+                <label class="file-label">
+                    📁 من الجهاز
+                    <input type="file" id="bannerFileInput" accept="image/*" onchange="onBannerSelect(event)">
+                </label>
                 <div id="bannerPreviewBox" class="banner-preview hidden"></div>
-                <button id="saveBannerBtn" class="btn primary hidden" style="width:100%;margin-top:8px" onclick="saveMediaToCloud('banner')">💾 حفظ البانر</button>
+                <button id="saveBannerBtn" class="btn primary hidden" style="width:100%;margin-top:8px" onclick="saveMediaToCloud('banner')">💾 حفظ</button>
                 <div id="bannerStatus" class="upload-status hidden"></div>
             </div>
 
@@ -290,7 +294,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
 
             <div style="background:var(--card2);padding:10px;border-radius:8px;margin:10px 0;text-align:right">
                 <label style="color:var(--acc);font-size:12px">🖼️ الإطار:</label>
-                <select id="frameSelect" onchange="updateProfileAttr('frame', this.value)" style="margin-top:0;font-size:12px;padding:8px">
+                <select id="frameSelect" onchange="updateProfileAttr('frame',this.value)" style="font-size:12px;padding:8px">
                     <option value="fire">🔥 نار</option>
                     <option value="superadmin">🔴 أدمن</option>
                     <option value="neon">💎 نيون</option>
@@ -298,7 +302,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
                     <option value="none">❌ بدون</option>
                 </select>
                 <label style="color:var(--acc);font-size:12px;margin:10px 0 4px">🎨 الخلفية:</label>
-                <select id="bgThemeSelect" onchange="updateBackgroundTheme(this.value)" style="margin-top:0;font-size:12px;padding:8px">
+                <select id="bgThemeSelect" onchange="updateBackgroundTheme(this.value)" style="font-size:12px;padding:8px">
                     <option value="#0b1220">🌑 غامق</option>
                     <option value="#1a1a2e">🌌 ليلي</option>
                     <option value="#f0f4f8">☀️ فاتح</option>
@@ -336,29 +340,20 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   const db = getFirestore(app);
 
   let currentUser=null, currentUsername="", currentUserDocId="";
-  let userFrameSetting="fire", userPrivacySetting="public", userBgTheme="#0b1220";
+  let userFrameSetting="fire", userBgTheme="#0b1220";
   let globalRequiredFollowers=parseInt(localStorage.getItem('delta_required_followers')||'5');
   let allScriptsCache=[], allTokPostsCache=[], allTokLikesCache=[], allUsersCache=[], allFollowsCache=[], notifsCache=[], allChatsCache=[];
   let currentUserAvatarURL="", currentUserBannerURL="";
   let pendingAvatarFile=null, pendingBannerFile=null;
-  let tokFeedMode='all';
   let currentChatWith=null;
 
   const DELTA_KEY="DeltaHubSecureKey2026";
   const DEFAULT_AVATAR="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239fb0cc'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // ===== IndexedDB =====
+  // IndexedDB
   const MEDIA_DB='DeltaMediaDB', STORE='media';
   let mediaDB=null;
-  function openMediaDB(){
-    return new Promise((res,rej)=>{
-      if(mediaDB) return res(mediaDB);
-      const r=indexedDB.open(MEDIA_DB,1);
-      r.onupgradeneeded=e=>{if(!e.target.result.objectStoreNames.contains(STORE))e.target.result.createObjectStore(STORE);};
-      r.onsuccess=()=>{mediaDB=r.result;res(mediaDB);};
-      r.onerror=()=>rej(r.error);
-    });
-  }
+  function openMediaDB(){return new Promise((res,rej)=>{if(mediaDB)return res(mediaDB);const r=indexedDB.open(MEDIA_DB,1);r.onupgradeneeded=e=>{if(!e.target.result.objectStoreNames.contains(STORE))e.target.result.createObjectStore(STORE);};r.onsuccess=()=>{mediaDB=r.result;res(mediaDB);};r.onerror=()=>rej(r.error);});}
   async function mediaSet(k,b){const db=await openMediaDB();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(b,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}
   async function mediaGet(k){const db=await openMediaDB();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const r=tx.objectStore(STORE).get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
   function formatSize(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';if(b<1073741824)return (b/1048576).toFixed(2)+' MB';return (b/1073741824).toFixed(2)+' GB';}
@@ -372,85 +367,66 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     return u;
   }
 
-  // ===== صور المستخدم =====
-  window.onAvatarSelect=function(e){
-    const f=e.target.files[0];if(!f)return;
-    pendingAvatarFile=f;
-    const url=URL.createObjectURL(f);
-    const img=document.getElementById('avatarPreviewImg');
-    img.src=url;img.classList.remove('hidden');
-    document.getElementById('saveAvatarBtn').classList.remove('hidden');
-    const st=document.getElementById('avatarStatus');
-    st.className='upload-status ok';st.textContent='📸 معاينة جاهزة ('+formatSize(f.size)+')';st.classList.remove('hidden');
-  };
-  window.onBannerSelect=function(e){
-    const f=e.target.files[0];if(!f)return;
-    pendingBannerFile=f;
-    const url=URL.createObjectURL(f);
-    document.getElementById('bannerPreviewBox').style.backgroundImage=`url(${url})`;
-    document.getElementById('bannerPreviewBox').classList.remove('hidden');
-    document.getElementById('saveBannerBtn').classList.remove('hidden');
-    const st=document.getElementById('bannerStatus');
-    st.className='upload-status ok';st.textContent='📸 معاينة جاهزة ('+formatSize(f.size)+')';st.classList.remove('hidden');
-  };
-  window.saveMediaToCloud=async function(type){
-    const file=type==='avatar'?pendingAvatarFile:pendingBannerFile;
-    if(!file)return alert('اختر صورة!');
-    const st=document.getElementById(type+'Status');
-    const show=(c,m)=>{st.className='upload-status '+c;st.textContent=m;st.classList.remove('hidden');};
-    show('loading','⏳ 1/3 حفظ محلي...');
-    const key=`${currentUsername}_${type}`;
-    try{await mediaSet(key,file);}catch(e){console.warn(e);}
-    show('loading','⏳ 2/3 رفع على Catbox...');
-    let cloud=null;
-    try{cloud=await uploadToCatbox(file);}catch(e){console.warn(e);}
-    let fsVal=null;
-    if(cloud)fsVal=cloud;
-    else if(file.size<700*1024){show('loading','⏳ 3/3 Base64...');try{fsVal=await fileToBase64(file);}catch(e){}}
-    else fsVal=`local:${key}`;
-    if(fsVal&&currentUserDocId){
-      try{const u={};u[type]=fsVal;await updateDoc(doc(db,'users',currentUserDocId),u);}catch(e){console.warn(e);}
-    }
-    const obj=URL.createObjectURL(file);
-    if(type==='avatar'){currentUserAvatarURL=obj;document.getElementById('profileModalAvatar').src=obj;}
-    else{currentUserBannerURL=obj;document.getElementById('bannerContainer').style.backgroundImage=`url(${obj})`;}
-    renderHeaderUser();
-    show('ok',cloud?`✅ تم الحفظ والرفع (${formatSize(file.size)})`:`✅ محفوظ محلياً (${formatSize(file.size)})`);
-    pendingAvatarFile=null;pendingBannerFile=null;
-  };
-  async function loadCurrentUserMedia(){
-    try{
-      const a=await mediaGet(`${currentUsername}_avatar`);
-      if(a)currentUserAvatarURL=URL.createObjectURL(a);
-      const b=await mediaGet(`${currentUsername}_banner`);
-      if(b)currentUserBannerURL=URL.createObjectURL(b);
-    }catch(e){}
-    const u=allUsersCache.find(x=>x.username===currentUsername);
-    if(!currentUserAvatarURL&&u&&u.avatar&&(u.avatar.startsWith('http')||u.avatar.startsWith('data:')))currentUserAvatarURL=u.avatar;
-    if(!currentUserBannerURL&&u&&u.banner&&(u.banner.startsWith('http')||u.banner.startsWith('data:')))currentUserBannerURL=u.banner;
-  }
-
-  // ===== صورة السكريبت =====
+  // ===== صورة السكريبت من الجهاز =====
   window.handleScriptImageUpload=function(e){
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=ev=>{
+    const file=e.target.files[0];
+    if(!file)return;
+    const st=document.getElementById('scriptImageStatus');
+    st.className='upload-status loading';
+    st.textContent='⏳ جاري ضغط الصورة...';
+    st.classList.remove('hidden');
+
+    const reader=new FileReader();
+    reader.onload=ev=>{
       const img=new Image();
       img.onload=()=>{
-        const c=document.createElement('canvas');
-        const maxW=500;
-        const s=Math.min(1,maxW/img.width);
-        c.width=img.width*s;c.height=img.height*s;
-        const ctx=c.getContext('2d');
-        ctx.drawImage(img,0,0,c.width,c.height);
-        const dataUrl=c.toDataURL('image/jpeg',0.6);
+        const canvas=document.createElement('canvas');
+        const maxW=600;
+        const scale=Math.min(1, maxW/img.width);
+        canvas.width=Math.round(img.width*scale);
+        canvas.height=Math.round(img.height*scale);
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+        // نحاول JPEG أولاً (أصغر)، ولو GIF مش هيتحافظ على الحركة بس هنضغطه
+        let dataUrl;
+        try {
+          dataUrl=canvas.toDataURL('image/jpeg',0.7);
+        } catch(err){
+          dataUrl=canvas.toDataURL('image/png');
+        }
+
         document.getElementById('scriptImageData').value=dataUrl;
+
         const prev=document.getElementById('scriptImagePreview');
-        prev.src=dataUrl;prev.style.display='block';
+        prev.src=dataUrl;
+        prev.style.display='block';
+        document.getElementById('removeScriptImgBtn').classList.remove('hidden');
+
+        const size=(dataUrl.length*0.75/1024).toFixed(0);
+        st.className='upload-status ok';
+        st.textContent='✅ تم اختيار الصورة ('+size+' KB)';
+      };
+      img.onerror=()=>{
+        st.className='upload-status err';
+        st.textContent='❌ مش قادر أقرأ الصورة';
       };
       img.src=ev.target.result;
     };
-    r.readAsDataURL(f);
+    reader.onerror=()=>{
+      st.className='upload-status err';
+      st.textContent='❌ خطأ في قراءة الملف';
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.removeScriptImage=function(){
+    document.getElementById('scriptImageData').value='';
+    document.getElementById('scriptImageInput').value='';
+    const prev=document.getElementById('scriptImagePreview');
+    prev.src='';prev.style.display='none';
+    document.getElementById('removeScriptImgBtn').classList.add('hidden');
+    document.getElementById('scriptImageStatus').classList.add('hidden');
   };
 
   function getDefaultImage(cat){
@@ -461,6 +437,69 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
       "عام":"https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&w=500&q=80"
     };
     return imgs[cat]||imgs["عام"];
+  }
+
+  // ===== الصورة الشخصية / البانر =====
+  window.onAvatarSelect=function(e){
+    const f=e.target.files[0];if(!f)return;
+    pendingAvatarFile=f;
+    const url=URL.createObjectURL(f);
+    const img=document.getElementById('avatarPreviewImg');
+    img.src=url;img.classList.remove('hidden');
+    document.getElementById('saveAvatarBtn').classList.remove('hidden');
+    const st=document.getElementById('avatarStatus');
+    st.className='upload-status ok';st.textContent='📸 جاهز ('+formatSize(f.size)+')';st.classList.remove('hidden');
+  };
+  window.onBannerSelect=function(e){
+    const f=e.target.files[0];if(!f)return;
+    pendingBannerFile=f;
+    const url=URL.createObjectURL(f);
+    document.getElementById('bannerPreviewBox').style.backgroundImage=`url(${url})`;
+    document.getElementById('bannerPreviewBox').classList.remove('hidden');
+    document.getElementById('saveBannerBtn').classList.remove('hidden');
+    const st=document.getElementById('bannerStatus');
+    st.className='upload-status ok';st.textContent='📸 جاهز ('+formatSize(f.size)+')';st.classList.remove('hidden');
+  };
+
+  window.saveMediaToCloud=async function(type){
+    const file=type==='avatar'?pendingAvatarFile:pendingBannerFile;
+    if(!file)return alert('اختر صورة!');
+    const st=document.getElementById(type+'Status');
+    const show=(c,m)=>{st.className='upload-status '+c;st.textContent=m;st.classList.remove('hidden');};
+
+    show('loading','⏳ 1/3 حفظ محلي...');
+    const key=`${currentUsername}_${type}`;
+    try{await mediaSet(key,file);}catch(e){console.warn(e);}
+
+    show('loading','⏳ 2/3 رفع على Catbox...');
+    let cloud=null;
+    try{cloud=await uploadToCatbox(file);}catch(e){console.warn(e);}
+
+    let fsVal=null;
+    if(cloud)fsVal=cloud;
+    else if(file.size<700*1024){show('loading','⏳ 3/3 Base64...');try{fsVal=await fileToBase64(file);}catch(e){}}
+    else fsVal=`local:${key}`;
+
+    if(fsVal&&currentUserDocId){try{const u={};u[type]=fsVal;await updateDoc(doc(db,'users',currentUserDocId),u);}catch(e){console.warn(e);}}
+
+    const obj=URL.createObjectURL(file);
+    if(type==='avatar'){currentUserAvatarURL=obj;document.getElementById('profileModalAvatar').src=obj;}
+    else{currentUserBannerURL=obj;document.getElementById('bannerContainer').style.backgroundImage=`url(${obj})`;}
+    renderHeaderUser();
+    show('ok',cloud?`✅ تم الحفظ (${formatSize(file.size)})`:`✅ محفوظ محلياً (${formatSize(file.size)})`);
+    pendingAvatarFile=null;pendingBannerFile=null;
+  };
+
+  async function loadCurrentUserMedia(){
+    try{
+      const a=await mediaGet(`${currentUsername}_avatar`);
+      if(a)currentUserAvatarURL=URL.createObjectURL(a);
+      const b=await mediaGet(`${currentUsername}_banner`);
+      if(b)currentUserBannerURL=URL.createObjectURL(b);
+    }catch(e){}
+    const u=allUsersCache.find(x=>x.username===currentUsername);
+    if(!currentUserAvatarURL&&u&&u.avatar&&(u.avatar.startsWith('http')||u.avatar.startsWith('data:')))currentUserAvatarURL=u.avatar;
+    if(!currentUserBannerURL&&u&&u.banner&&(u.banner.startsWith('http')||u.banner.startsWith('data:')))currentUserBannerURL=u.banner;
   }
 
   // ===== نشر السكريبت =====
@@ -486,29 +525,21 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
           <h4>✅ تم النشر!</h4>
           <label>🌐 رابط المشاهدة:</label>
           <input type="text" class="url-input" readonly value="${link}" onclick="this.select()">
-          <label>📋 كود التشغيل (Roblox):</label>
+          <label>📋 كود التشغيل:</label>
           <textarea readonly id="resultLS">${lua}</textarea>
-          <button class="btn copy-btn" style="width:100%;margin-top:5px" onclick="copyText(document.getElementById('resultLS').value,this)">📋 نسخ Loadstring</button>
-          <div style="font-size:11px;color:var(--muted);margin-top:8px;padding:8px;background:rgba(76,201,240,0.1);border-radius:6px">
-            💡 الرابط بيحمل الكود كامل جواه — حتى لو الداتا اتمسحت، الرابط شغال للأبد
-          </div>
+          <button class="btn copy-btn" style="width:100%;margin-top:5px" onclick="copyText(document.getElementById('resultLS').value,this)">📋 نسخ</button>
         </div>`;
 
       document.getElementById('scriptName').value='';
       document.getElementById('scriptCode').value='';
-      document.getElementById('scriptImageInput').value='';
-      document.getElementById('scriptImageData').value='';
-      document.getElementById('scriptImagePreview').style.display='none';
-    }catch(e){alert("فشل النشر: "+e.message);}
+      removeScriptImage();
+      switchTab('my');
+    }catch(e){alert("فشل: "+e.message);}
   };
 
   // ===== Auth =====
   function aiCheckUsername(n){const b=["سافل","قذر","حمار","كلب","sex","hack","admin_fake","porn"];const l=n.toLowerCase();return !b.some(w=>l.includes(w));}
-  window.saveRequiredFollowersSetting=()=>{
-    const v=parseInt(document.getElementById('requiredFollowersInput').value);
-    if(isNaN(v)||v<1)return alert('رقم غير صحيح!');
-    globalRequiredFollowers=v;localStorage.setItem('delta_required_followers',v);alert('✅ تم!');openProfileModal();
-  };
+  window.saveRequiredFollowersSetting=()=>{const v=parseInt(document.getElementById('requiredFollowersInput').value);if(isNaN(v)||v<1)return alert('رقم!');globalRequiredFollowers=v;localStorage.setItem('delta_required_followers',v);alert('✅ تم!');openProfileModal();};
   window.confirmLogout=()=>{if(confirm("خروج؟"))signOut(auth);};
   window.toggleAuth=(t)=>{document.getElementById('loginForm').classList.toggle('hidden',t!=='login');document.getElementById('registerForm').classList.toggle('hidden',t!=='register');};
   window.openAuthModalForAction=(t)=>{document.getElementById('accountsDropdown').style.display='none';document.getElementById('authScreen').classList.remove('hidden');document.querySelector('.wrap').style.display='none';toggleAuth(t);};
@@ -548,7 +579,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
         currentUserDocId=u.id;
         currentUsername=u.data().username;
         userFrameSetting=u.data().frame||'fire';
-        userPrivacySetting=u.data().privacy||'public';
         userBgTheme=u.data().bgTheme||'#0b1220';
         applyBackgroundTheme(userBgTheme);
         document.getElementById('authScreen').classList.add('hidden');
@@ -576,7 +606,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     onSnapshot(collection(db,"chats"),s=>{allChatsCache=s.docs.map(d=>({id:d.id,...d.data()}));renderChatMessages();});
   }
 
-  // ===== User Info =====
   function getUserProfileInfo(username){
     const u=allUsersCache.find(x=>x.username===username);
     let avatar;
@@ -633,11 +662,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   };
   window.closeProfileModal=()=>document.getElementById('profileModal').classList.add('hidden');
 
-  window.updateProfileAttr=async(f,v)=>{
-    if(f==='frame')userFrameSetting=v;
-    if(f==='privacy')userPrivacySetting=v;
-    if(currentUserDocId){const u={};u[f]=v;await updateDoc(doc(db,"users",currentUserDocId),u);renderHeaderUser();alert('✅ تم!');}
-  };
+  window.updateProfileAttr=async(f,v)=>{if(f==='frame')userFrameSetting=v;if(currentUserDocId){const u={};u[f]=v;await updateDoc(doc(db,"users",currentUserDocId),u);renderHeaderUser();alert('✅ تم!');}};
   window.updateBackgroundTheme=async(v)=>{userBgTheme=v;applyBackgroundTheme(v);if(currentUserDocId)await updateDoc(doc(db,"users",currentUserDocId),{bgTheme:v});};
   function applyBackgroundTheme(c){document.getElementById('appBody').style.backgroundColor=c;}
 
@@ -645,9 +670,9 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     ['add','tok','obf','my','comm','chat'].forEach(t=>{document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.add('hidden');document.getElementById('nav'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('active');});
     document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hidden');
     document.getElementById('nav'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
   };
 
-  // ===== سكريبتاتي =====
   function renderMyScripts(){
     const lc=document.getElementById('myScriptsList');
     if(!currentUser)return;
@@ -674,7 +699,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   }
   window.deleteScript=async(id)=>{if(confirm('حذف؟'))await deleteDoc(doc(db,"scripts",id));};
 
-  // ===== المجتمع =====
   window.renderCommunity=()=>{
     const lc=document.getElementById('communityList');
     if(!currentUser)return;
@@ -694,60 +718,19 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
           </div>
           <div style="font-size:12px;color:var(--muted);margin-top:6px">بواسطة: ${s.author}</div>
           <textarea readonly style="min-height:45px;font-size:11px;color:var(--ok);margin-top:8px">${lua}</textarea>
-          <button class="btn copy-btn" style="width:100%;margin-top:5px" onclick="copyText(this.previousElementSibling.value,this)">📋 نسخ Loadstring</button>
+          <button class="btn copy-btn" style="width:100%;margin-top:5px" onclick="copyText(this.previousElementSibling.value,this)">📋 نسخ</button>
         </div></div>`;
     }).join('');
   };
 
-  // ===== دلتا توك =====
-  window.handleTokMediaUpload=(e)=>{
-    const f=e.target.files[0];if(!f)return;
-    const url=URL.createObjectURL(f);
-    document.getElementById('tokMediaData').value=url;
-    const v=document.getElementById('tokVideoPreview');
-    v.src=url;v.style.display='block';
-  };
-  window.publishTokPost=async()=>{
-    const c=document.getElementById('tokCaption').value.trim();
-    const m=document.getElementById('tokMediaData').value;
-    const p=document.getElementById('tokPrivacy').value;
-    if(!m)return alert('ارفع فيديو!');
-    try{
-      await addDoc(collection(db,"tok_posts"),{author:currentUsername,caption:c,mediaData:m,privacy:p,createdAt:serverTimestamp()});
-      document.getElementById('tokCaption').value='';
-      document.getElementById('tokMediaData').value='';
-      document.getElementById('tokVideoPreview').style.display='none';
-      alert('✅ تم!');
-    }catch(e){alert("خطأ: "+e.message);}
-  };
-  window.setTokFeedMode=(mode)=>{
-    tokFeedMode=mode;
-    document.getElementById('tokFeedAll').style.background=mode==='all'?'var(--acc)':'var(--card2)';
-    document.getElementById('tokFeedAll').style.color=mode==='all'?'#071019':'var(--acc)';
-    document.getElementById('tokFeedFollowing').style.background=mode==='following'?'var(--acc)':'var(--card2)';
-    document.getElementById('tokFeedFollowing').style.color=mode==='following'?'#071019':'var(--acc)';
-    renderTokFeed();
-  };
+  window.handleTokMediaUpload=(e)=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f);document.getElementById('tokMediaData').value=url;const v=document.getElementById('tokVideoPreview');v.src=url;v.style.display='block';};
+  window.publishTokPost=async()=>{const c=document.getElementById('tokCaption').value.trim();const m=document.getElementById('tokMediaData').value;if(!m)return alert('ارفع فيديو!');try{await addDoc(collection(db,"tok_posts"),{author:currentUsername,caption:c,mediaData:m,privacy:'public',createdAt:serverTimestamp()});document.getElementById('tokCaption').value='';document.getElementById('tokMediaData').value='';document.getElementById('tokVideoPreview').style.display='none';alert('✅ تم!');}catch(e){alert("خطأ: "+e.message);}};
   function renderTokFeed(){
     const feed=document.getElementById('deltaTokFeed');
-    let posts=allTokPostsCache;
-    const low=currentUsername.toLowerCase();
-    const isSuper=low==='super admin'||low==='admin'||low==='superadmin';
-    posts=posts.filter(p=>{
-      if(isSuper||p.author===currentUsername)return true;
-      const ad=allUsersCache.find(u=>u.username===p.author);
-      if(ad&&ad.privacy==='private')return allFollowsCache.some(f=>(f.user===currentUsername&&f.target===p.author)||(f.user===p.author&&f.target===currentUsername));
-      if(p.privacy==='public')return true;
-      return allFollowsCache.some(f=>(f.user===currentUsername&&f.target===p.author)||(f.user===p.author&&f.target===currentUsername));
-    });
-    if(tokFeedMode==='following'){
-      const fl=allFollowsCache.filter(f=>f.user===currentUsername).map(f=>f.target);
-      posts=posts.filter(p=>fl.includes(p.author)||p.author===currentUsername);
-    }
+    const posts=allTokPostsCache;
     feed.innerHTML=posts.length?posts.map(p=>{
       const likes=allTokLikesCache.filter(l=>l.postId===p.id);
       const hl=likes.some(l=>l.user===currentUsername);
-      const isF=allFollowsCache.some(f=>f.user===currentUsername&&f.target===p.author);
       const ai=getUserProfileInfo(p.author);
       return `<div class="tiktok-card">
         <div class="tiktok-header">
@@ -755,7 +738,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
             <img src="${ai.avatar}" class="feed-avatar ${ai.frameClass}">
             <span style="font-weight:bold;color:var(--acc)">👤 ${p.author} ${ai.isVerified?'<span class="verified-badge">✔</span>':''}</span>
           </div>
-          ${p.author!==currentUsername?`<button class="btn sm ${isF?'':'primary'}" onclick="toggleFollow('${p.author}')">${isF?'✓ متابَع':'➕ متابعة'}</button>`:''}
         </div>
         <video src="${p.mediaData}" class="tiktok-media" muted controls></video>
         <div style="padding:10px 14px;font-size:13px">${p.caption}</div>
@@ -765,18 +747,8 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
       </div>`;
     }).join(''):'<p style="color:var(--muted);text-align:center">لا توجد فيديوهات.</p>';
   }
-  window.toggleFollow=async(target)=>{
-    const ex=allFollowsCache.filter(f=>f.user===currentUsername&&f.target===target);
-    if(ex.length>0)for(let e of ex)await deleteDoc(doc(db,"follows",e.id));
-    else await addDoc(collection(db,"follows"),{user:currentUsername,target:target});
-  };
-  window.toggleTokLike=async(pid)=>{
-    const ex=allTokLikesCache.filter(l=>l.postId===pid&&l.user===currentUsername);
-    if(ex.length>0)for(let e of ex)await deleteDoc(doc(db,"tok_likes",e.id));
-    else await addDoc(collection(db,"tok_likes"),{postId:pid,user:currentUsername});
-  };
+  window.toggleTokLike=async(pid)=>{const ex=allTokLikesCache.filter(l=>l.postId===pid&&l.user===currentUsername);if(ex.length>0)for(let e of ex)await deleteDoc(doc(db,"tok_likes",e.id));else await addDoc(collection(db,"tok_likes"),{postId:pid,user:currentUsername});};
 
-  // ===== المراسلات =====
   window.searchUsers=()=>{
     const q=document.getElementById('userSearchInput').value.toLowerCase();
     const res=document.getElementById('userSearchResults');
@@ -791,12 +763,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
       </div>`;
     }).join(''):'<p style="color:var(--muted);text-align:center;font-size:12px">مفيش نتائج.</p>';
   };
-  window.openChat=(username)=>{
-    currentChatWith=username;
-    document.getElementById('chatWithTitle').textContent='المحادثة مع: '+username;
-    document.getElementById('activeChatBox').classList.remove('hidden');
-    renderChatMessages();
-  };
+  window.openChat=(username)=>{currentChatWith=username;document.getElementById('chatWithTitle').textContent='المحادثة مع: '+username;document.getElementById('activeChatBox').classList.remove('hidden');renderChatMessages();};
   window.closeChat=()=>{currentChatWith=null;document.getElementById('activeChatBox').classList.add('hidden');};
   function renderChatMessages(){
     if(!currentChatWith)return;
@@ -817,7 +784,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     }catch(e){alert("خطأ: "+e.message);}
   };
 
-  // ===== التمويه =====
   window.obfuscateCode=()=>{
     const p=document.getElementById('plainCode').value;
     if(!p)return alert('اكتب الكود!');
@@ -826,11 +792,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     document.getElementById('encryptedCode').value=`local _k="${DELTA_KEY}"\nlocal _e={${eb.join(',')}}\nlocal _s=""\nfor i=1,#_e do\n  local _kc=string.byte(_k,(i-1)%#_k+1)\n  _s=_s..string.char(bit32.bxor(_e[i],_kc))\nend\nassert(loadstring(_s))()`;
   };
 
-  // ===== إشعارات =====
-  window.toggleNotifications=()=>{
-    const d=document.getElementById('notifDropdown');
-    d.style.display=d.style.display==='block'?'none':'block';
-  };
+  window.toggleNotifications=()=>{const d=document.getElementById('notifDropdown');d.style.display=d.style.display==='block'?'none':'block';};
   function renderNotifications(){
     const b=document.getElementById('notifBadge');
     const ur=notifsCache.filter(n=>!n.read);
@@ -847,4 +809,4 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   };
 </script>
 </body>
-    </html>
+</html>
