@@ -68,8 +68,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
 .result-box label{color:var(--text);font-size:12px;margin-top:8px;display:block}
 .result-box .url-input{font-size:11px;padding:8px;margin-top:4px;background:#06101e;color:var(--acc);border:1px solid var(--line);border-radius:6px;width:100%;direction:ltr;text-align:left}
 .result-box textarea{font-size:11px;color:var(--ok);min-height:60px;margin-top:4px}
-
-/* زر اختيار الملف - شغال 100% على الموبايل */
 .file-label{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#071019;font-weight:bold;font-size:15px;cursor:pointer;margin-bottom:8px;transition:0.2s}
 .file-label:active{transform:scale(0.97)}
 .file-label input{display:none}
@@ -78,6 +76,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
 <body id="appBody" style="background-color:var(--bg)">
 
 <script>
+// ===== RAW MODE =====
 (function(){
     const rawParam = new URLSearchParams(window.location.search).get('raw');
     if (rawParam !== null) {
@@ -92,6 +91,26 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
         } catch(e) {
             document.documentElement.innerHTML = '<body style="background:#000;color:#f00;padding:20px;font-family:monospace">Error: '+e.message+'</body>';
         }
+    }
+})();
+
+// ===== تنظيف صور localStorage القديمة (عشان مشكلة الـ quota) =====
+(function cleanOldLocalStorageImages(){
+    try {
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            // شيل أي مفتاح بيبدأ بـ delta_b64_ (كان بيحفظ صور base64 كبيرة)
+            if (key && (key.startsWith('delta_b64_avatar_') || key.startsWith('delta_b64_banner_'))) {
+                keysToRemove.push(key);
+            }
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+        if (keysToRemove.length > 0) {
+            console.log('[Cleanup] Removed', keysToRemove.length, 'old image keys from localStorage');
+        }
+    } catch(e) {
+        console.warn('[Cleanup] Failed:', e);
     }
 })();
 </script>
@@ -152,7 +171,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
       <button id="navChat" onclick="switchTab('chat')">المراسلات</button>
   </div>
 
-  <!-- ===== نشر سكريبت ===== -->
   <div id="tabAdd">
       <div class="card">
         <h3>🚀 نشر سكريبت جديد</h3>
@@ -168,15 +186,12 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
           </select>
         </label>
 
-        <!-- صورة السكريبت - زر label شغال على الموبايل -->
         <div style="background:var(--card2);padding:12px;border-radius:10px;margin:12px 0">
           <div style="font-size:13px;color:var(--acc);font-weight:bold;margin-bottom:10px">📸 صورة السكريبت (اختياري)</div>
-
           <label class="file-label">
             📁 اختيار صورة من الجهاز
             <input type="file" id="scriptImageInput" accept="image/*" onchange="handleScriptImageUpload(event)">
           </label>
-
           <input type="hidden" id="scriptImageData">
           <img id="scriptImagePreview" class="script-image-preview" style="display:none">
           <button class="btn sm sec hidden" id="removeScriptImgBtn" style="width:100%;margin-top:6px" onclick="removeScriptImage()">🗑️ مسح الصورة</button>
@@ -252,7 +267,6 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   </div>
 </div>
 
-<!-- بروفايل -->
 <div id="profileModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div id="bannerContainer" style="width:100%;height:110px;background:#1f2d4a;background-size:cover;background-position:center;border-radius:14px 14px 0 0"></div>
@@ -350,12 +364,36 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   const DELTA_KEY="DeltaHubSecureKey2026";
   const DEFAULT_AVATAR="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239fb0cc'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-  // IndexedDB
+  // ===== IndexedDB (مفيش حد للحجم - بديل localStorage) =====
   const MEDIA_DB='DeltaMediaDB', STORE='media';
   let mediaDB=null;
-  function openMediaDB(){return new Promise((res,rej)=>{if(mediaDB)return res(mediaDB);const r=indexedDB.open(MEDIA_DB,1);r.onupgradeneeded=e=>{if(!e.target.result.objectStoreNames.contains(STORE))e.target.result.createObjectStore(STORE);};r.onsuccess=()=>{mediaDB=r.result;res(mediaDB);};r.onerror=()=>rej(r.error);});}
-  async function mediaSet(k,b){const db=await openMediaDB();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(b,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}
-  async function mediaGet(k){const db=await openMediaDB();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const r=tx.objectStore(STORE).get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+  function openMediaDB(){
+    return new Promise((res,rej)=>{
+      if(mediaDB)return res(mediaDB);
+      const r=indexedDB.open(MEDIA_DB,1);
+      r.onupgradeneeded=e=>{if(!e.target.result.objectStoreNames.contains(STORE))e.target.result.createObjectStore(STORE);};
+      r.onsuccess=()=>{mediaDB=r.result;res(mediaDB);};
+      r.onerror=()=>rej(r.error);
+    });
+  }
+  async function mediaSet(k,b){
+    const db=await openMediaDB();
+    return new Promise((res,rej)=>{
+      const tx=db.transaction(STORE,'readwrite');
+      tx.objectStore(STORE).put(b,k);
+      tx.oncomplete=res;
+      tx.onerror=()=>rej(tx.error);
+    });
+  }
+  async function mediaGet(k){
+    const db=await openMediaDB();
+    return new Promise((res,rej)=>{
+      const tx=db.transaction(STORE,'readonly');
+      const r=tx.objectStore(STORE).get(k);
+      r.onsuccess=()=>res(r.result);
+      r.onerror=()=>rej(r.error);
+    });
+  }
   function formatSize(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';if(b<1073741824)return (b/1048576).toFixed(2)+' MB';return (b/1073741824).toFixed(2)+' GB';}
   function fileToBase64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(f);});}
   async function uploadToCatbox(file){
@@ -367,7 +405,7 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     return u;
   }
 
-  // ===== صورة السكريبت من الجهاز =====
+  // ===== صورة السكريبت =====
   window.handleScriptImageUpload=function(e){
     const file=e.target.files[0];
     if(!file)return;
@@ -380,32 +418,27 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     reader.onload=ev=>{
       const img=new Image();
       img.onload=()=>{
-        const canvas=document.createElement('canvas');
-        const maxW=600;
-        const scale=Math.min(1, maxW/img.width);
-        canvas.width=Math.round(img.width*scale);
-        canvas.height=Math.round(img.height*scale);
-        const ctx=canvas.getContext('2d');
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-
-        // نحاول JPEG أولاً (أصغر)، ولو GIF مش هيتحافظ على الحركة بس هنضغطه
-        let dataUrl;
         try {
-          dataUrl=canvas.toDataURL('image/jpeg',0.7);
-        } catch(err){
-          dataUrl=canvas.toDataURL('image/png');
+          const canvas=document.createElement('canvas');
+          const maxW=600;
+          const scale=Math.min(1, maxW/img.width);
+          canvas.width=Math.round(img.width*scale);
+          canvas.height=Math.round(img.height*scale);
+          const ctx=canvas.getContext('2d');
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          const dataUrl=canvas.toDataURL('image/jpeg',0.7);
+          document.getElementById('scriptImageData').value=dataUrl;
+          const prev=document.getElementById('scriptImagePreview');
+          prev.src=dataUrl;
+          prev.style.display='block';
+          document.getElementById('removeScriptImgBtn').classList.remove('hidden');
+          const size=(dataUrl.length*0.75/1024).toFixed(0);
+          st.className='upload-status ok';
+          st.textContent='✅ تم اختيار الصورة ('+size+' KB)';
+        } catch(err) {
+          st.className='upload-status err';
+          st.textContent='❌ خطأ: '+err.message;
         }
-
-        document.getElementById('scriptImageData').value=dataUrl;
-
-        const prev=document.getElementById('scriptImagePreview');
-        prev.src=dataUrl;
-        prev.style.display='block';
-        document.getElementById('removeScriptImgBtn').classList.remove('hidden');
-
-        const size=(dataUrl.length*0.75/1024).toFixed(0);
-        st.className='upload-status ok';
-        st.textContent='✅ تم اختيار الصورة ('+size+' KB)';
       };
       img.onerror=()=>{
         st.className='upload-status err';
@@ -424,7 +457,8 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     document.getElementById('scriptImageData').value='';
     document.getElementById('scriptImageInput').value='';
     const prev=document.getElementById('scriptImagePreview');
-    prev.src='';prev.style.display='none';
+    prev.src='';
+    prev.style.display='none';
     document.getElementById('removeScriptImgBtn').classList.add('hidden');
     document.getElementById('scriptImageStatus').classList.add('hidden');
   };
@@ -439,26 +473,34 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     return imgs[cat]||imgs["عام"];
   }
 
-  // ===== الصورة الشخصية / البانر =====
+  // ===== الأفاتار والبانر (IndexedDB فقط - مفيش localStorage) =====
   window.onAvatarSelect=function(e){
-    const f=e.target.files[0];if(!f)return;
+    const f=e.target.files[0];
+    if(!f)return;
     pendingAvatarFile=f;
     const url=URL.createObjectURL(f);
     const img=document.getElementById('avatarPreviewImg');
-    img.src=url;img.classList.remove('hidden');
+    img.src=url;
+    img.classList.remove('hidden');
     document.getElementById('saveAvatarBtn').classList.remove('hidden');
     const st=document.getElementById('avatarStatus');
-    st.className='upload-status ok';st.textContent='📸 جاهز ('+formatSize(f.size)+')';st.classList.remove('hidden');
+    st.className='upload-status ok';
+    st.textContent='📸 جاهز ('+formatSize(f.size)+')';
+    st.classList.remove('hidden');
   };
+
   window.onBannerSelect=function(e){
-    const f=e.target.files[0];if(!f)return;
+    const f=e.target.files[0];
+    if(!f)return;
     pendingBannerFile=f;
     const url=URL.createObjectURL(f);
     document.getElementById('bannerPreviewBox').style.backgroundImage=`url(${url})`;
     document.getElementById('bannerPreviewBox').classList.remove('hidden');
     document.getElementById('saveBannerBtn').classList.remove('hidden');
     const st=document.getElementById('bannerStatus');
-    st.className='upload-status ok';st.textContent='📸 جاهز ('+formatSize(f.size)+')';st.classList.remove('hidden');
+    st.className='upload-status ok';
+    st.textContent='📸 جاهز ('+formatSize(f.size)+')';
+    st.classList.remove('hidden');
   };
 
   window.saveMediaToCloud=async function(type){
@@ -467,39 +509,86 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
     const st=document.getElementById(type+'Status');
     const show=(c,m)=>{st.className='upload-status '+c;st.textContent=m;st.classList.remove('hidden');};
 
-    show('loading','⏳ 1/3 حفظ محلي...');
+    // 1. IndexedDB (مفيش حد للحجم - آمن تماماً للصور الكبيرة)
+    show('loading','⏳ 1/3 حفظ في المتصفح (IndexedDB)...');
     const key=`${currentUsername}_${type}`;
-    try{await mediaSet(key,file);}catch(e){console.warn(e);}
+    let localSaved=false;
+    try {
+      await mediaSet(key, file);
+      localSaved=true;
+    } catch(e) {
+      console.warn('[IndexedDB]', e);
+    }
 
+    // 2. Catbox
     show('loading','⏳ 2/3 رفع على Catbox...');
     let cloud=null;
-    try{cloud=await uploadToCatbox(file);}catch(e){console.warn(e);}
+    try {
+      cloud=await uploadToCatbox(file);
+    } catch(e) {
+      console.warn('[Catbox]', e);
+    }
 
+    // 3. Firestore أو علامة محلية
     let fsVal=null;
-    if(cloud)fsVal=cloud;
-    else if(file.size<700*1024){show('loading','⏳ 3/3 Base64...');try{fsVal=await fileToBase64(file);}catch(e){}}
-    else fsVal=`local:${key}`;
+    if(cloud) {
+      fsVal=cloud;
+    } else if(file.size < 700*1024) {
+      show('loading','⏳ 3/3 حفظ Base64 في Firestore...');
+      try {
+        fsVal=await fileToBase64(file);
+      } catch(e) {
+        console.warn('[Base64]', e);
+      }
+    } else {
+      fsVal=`local:${key}`;
+    }
 
-    if(fsVal&&currentUserDocId){try{const u={};u[type]=fsVal;await updateDoc(doc(db,'users',currentUserDocId),u);}catch(e){console.warn(e);}}
+    // حفظ في Firestore
+    if(fsVal && currentUserDocId){
+      try {
+        const u={};u[type]=fsVal;
+        await updateDoc(doc(db,'users',currentUserDocId),u);
+      } catch(e) {
+        console.warn('[Firestore]', e);
+      }
+    }
 
+    // تحديث الواجهة
     const obj=URL.createObjectURL(file);
-    if(type==='avatar'){currentUserAvatarURL=obj;document.getElementById('profileModalAvatar').src=obj;}
-    else{currentUserBannerURL=obj;document.getElementById('bannerContainer').style.backgroundImage=`url(${obj})`;}
+    if(type==='avatar'){
+      currentUserAvatarURL=obj;
+      document.getElementById('profileModalAvatar').src=obj;
+    } else {
+      currentUserBannerURL=obj;
+      document.getElementById('bannerContainer').style.backgroundImage=`url(${obj})`;
+    }
     renderHeaderUser();
-    show('ok',cloud?`✅ تم الحفظ (${formatSize(file.size)})`:`✅ محفوظ محلياً (${formatSize(file.size)})`);
+
+    if(cloud){
+      show('ok',`✅ تم الحفظ والرفع (${formatSize(file.size)})`);
+    } else if(localSaved){
+      show('ok',`✅ محفوظ على جهازك (${formatSize(file.size)}) - بدون رفع`);
+    } else {
+      show('err',`❌ فشل الحفظ - جرب صورة أصغر`);
+    }
     pendingAvatarFile=null;pendingBannerFile=null;
   };
 
   async function loadCurrentUserMedia(){
-    try{
+    try {
       const a=await mediaGet(`${currentUsername}_avatar`);
-      if(a)currentUserAvatarURL=URL.createObjectURL(a);
+      if(a) currentUserAvatarURL=URL.createObjectURL(a);
       const b=await mediaGet(`${currentUsername}_banner`);
-      if(b)currentUserBannerURL=URL.createObjectURL(b);
-    }catch(e){}
+      if(b) currentUserBannerURL=URL.createObjectURL(b);
+    } catch(e) {
+      console.warn('[Load Media]', e);
+    }
     const u=allUsersCache.find(x=>x.username===currentUsername);
-    if(!currentUserAvatarURL&&u&&u.avatar&&(u.avatar.startsWith('http')||u.avatar.startsWith('data:')))currentUserAvatarURL=u.avatar;
-    if(!currentUserBannerURL&&u&&u.banner&&(u.banner.startsWith('http')||u.banner.startsWith('data:')))currentUserBannerURL=u.banner;
+    if(!currentUserAvatarURL && u && u.avatar && (u.avatar.startsWith('http')||u.avatar.startsWith('data:')))
+      currentUserAvatarURL=u.avatar;
+    if(!currentUserBannerURL && u && u.banner && (u.banner.startsWith('http')||u.banner.startsWith('data:')))
+      currentUserBannerURL=u.banner;
   }
 
   // ===== نشر السكريبت =====
@@ -543,7 +632,17 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   window.confirmLogout=()=>{if(confirm("خروج؟"))signOut(auth);};
   window.toggleAuth=(t)=>{document.getElementById('loginForm').classList.toggle('hidden',t!=='login');document.getElementById('registerForm').classList.toggle('hidden',t!=='register');};
   window.openAuthModalForAction=(t)=>{document.getElementById('accountsDropdown').style.display='none';document.getElementById('authScreen').classList.remove('hidden');document.querySelector('.wrap').style.display='none';toggleAuth(t);};
-  function saveAccountToLocal(e,p,u){let a=JSON.parse(localStorage.getItem('delta_saved_accounts')||'[]');if(!a.some(x=>x.email===e)){a.push({email:e,password:p,username:u});localStorage.setItem('delta_saved_accounts',JSON.stringify(a));}}
+  function saveAccountToLocal(e,p,u){
+    try {
+      let a=JSON.parse(localStorage.getItem('delta_saved_accounts')||'[]');
+      if(!a.some(x=>x.email===e)){
+        a.push({email:e,password:p,username:u});
+        localStorage.setItem('delta_saved_accounts',JSON.stringify(a));
+      }
+    } catch(err) {
+      console.warn('[saveAccount]', err);
+    }
+  }
   window.toggleAccountsMenu=()=>{const d=document.getElementById('accountsDropdown');d.style.display=d.style.display==='block'?'none':'block';const acc=JSON.parse(localStorage.getItem('delta_saved_accounts')||'[]');document.getElementById('savedAccountsList').innerHTML=acc.length?acc.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;background:var(--card2);padding:6px;border-radius:6px;margin-bottom:4px;font-size:12px"><span>👤 ${a.username}</span><button class="btn sm primary" onclick="switchAccount('${a.email}','${a.password}')">دخول</button></div>`).join(''):'<span style="font-size:11px;color:var(--muted)">لا يوجد.</span>';};
   window.switchAccount=async(e,p)=>{try{await signInWithEmailAndPassword(auth,e,p);document.getElementById('accountsDropdown').style.display='none';}catch(err){alert("خطأ: "+err.message);}};
   window.doRegister=async()=>{
@@ -609,8 +708,8 @@ textarea{width:100%;min-height:120px;padding:12px;border-radius:8px;border:1px s
   function getUserProfileInfo(username){
     const u=allUsersCache.find(x=>x.username===username);
     let avatar;
-    if(username===currentUsername&&currentUserAvatarURL)avatar=currentUserAvatarURL;
-    else if(u&&u.avatar&&!u.avatar.startsWith('local:'))avatar=u.avatar;
+    if(username===currentUsername && currentUserAvatarURL) avatar=currentUserAvatarURL;
+    else if(u && u.avatar && !u.avatar.startsWith('local:')) avatar=u.avatar;
     else avatar=DEFAULT_AVATAR;
     const frame=u&&u.frame?u.frame:'fire';
     let fc='frame-fire';
